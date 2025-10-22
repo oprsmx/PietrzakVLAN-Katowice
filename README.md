@@ -19,7 +19,7 @@ Generator poleceń do automatycznego przenoszenia urządzeń między VLANami w R
 
 ## 🌐 Strona główna
 
-**Link:** [https://oprsmx.github.io/PietrzakVLAN-Katowice/](https://dariuszplach.github.io/PietrzakVLAN-Katowice/)
+**Link:** [https://oprsmx.github.io/PietrzakVLAN-Katowice/](https://oprsmx.github.io/PietrzakVLAN-Katowice/)
 
 ## 📦 Struktura projektu
 
