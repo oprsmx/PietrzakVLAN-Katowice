@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PietrzakVLAN - Katowice | Narzędzia Sieciowe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tools-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .tool-card {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .tool-title {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tool-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-coming {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .tool-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .tool-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #dee2e6;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+        .info-box h3 {
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+        .info-box p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 PietrzakVLAN - Katowice</h1>
+            <p>Narzędzia do zarządzania siecią i infrastrukturą</p>
+        </div>
+
+        <div class="content">
+            <h2 class="section-title">📋 Dostępne narzędzia</h2>
+            
+            <div class="tools-list">
+                <!-- VLAN Migration Tool -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            🔄 VLAN Migration Tool
+                        </div>
+                        <span class="tool-status status-active">✅ Aktywne</span>
+                    </div>
+                    <div class="tool-description">
+                        Generator poleceń do automatycznego przenoszenia urządzeń między VLANami. Obsługuje wszystkie sieci: Renault, Ferrari, Peugeot, Lamborghini, Drukarki, IoT, VoIP, Goscie, Backup_Net, Mgmt, Serwery oraz UniFi_Mgmt.
+                    </div>
+                    <div class="tool-buttons">
+                        <a href="vlan_migration_tool-final-v4-popup.html" class="btn btn-primary" target="_blank">🚀 Otwórz narzędzie</a>
+                    </div>
+                </div>
+
+                <!-- Placeholder dla kolejnych narzędzi -->
+                <div class="tool-card" style="opacity: 0.6;">
+                    <div class="tool-header">
+                        <div class="tool-title">
+                            📊 Kolejne narzędzie
+                        </div>
+                        <span class="tool-status status-coming">⏳ Wkrótce</span>
+                    </div>
+                    <div class="tool-description">
+                        Tutaj pojawi się Twoje następne narzędzie. Po prostu wgraj plik HTML i zaktualizuj tę stronę.
+                    </div>
+                    <div class="tool-buttons">
+                        <button class="btn btn-secondary" disabled>Wkrótce dostępne</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>ℹ️ Jak dodać kolejne narzędzie?</h3>
+                <p>
+                    1. Wgraj nowy plik HTML do repozytorium GitHub<br>
+                    2. Edytuj plik <code>index.html</code> i dodaj nową kartę narzędzia<br>
+                    3. Skopiuj link i osadź w Notion przez <code>/embed</code>
+                </p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>PietrzakVLAN-Katowice</strong> | Network Management Tools</p>
+            <p style="font-size: 0.9em; margin-top: 5px;">© 2025 | Katowice, Śląsk</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Przenoszenia VLAN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 40px;
+        }
+        .instructions-box {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .instructions-box h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .instructions-box ol {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+        .instructions-box ol li {
+            margin-bottom: 10px;
+        }
+        .instructions-box .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            color: #856404;
+        }
+        .instructions-box .warning strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #667eea;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .ip-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ip-prefix {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+        .ip-input-group input {
+            width: 80px;
+            text-align: center;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .btn-detect {
+            background: #17a2b8;
+            color: white;
+        }
+        .btn-generate {
+            background: #28a745;
+            color: white;
+        }
+        .btn-copy {
+            background: #667eea;
+            color: white;
+            margin-top: 15px;
+            padding: 12px 20px;
+            font-size: 0.95em;
+        }
+        .btn-copy-single {
+            width: auto;
+            flex: none;
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+        .result-section {
+            display: none;
+            margin-top: 30px;
+        }
+        .result-step {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #28a745;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .result-step h3 {
+            color: #28a745;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+        .code-block code {
+            display: block;
+            white-space: pre;
+        }
+        .comment {
+            color: #6a9955;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .mac-valid {
+            border-color: #28a745 !important;
+        }
+        .mac-invalid {
+            border-color: #dc3545 !important;
+        }
+        .history-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .history-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .history-item:hover {
+            background: #e9ecef;
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-weight: bold;
+            z-index: 9999;
+            animation: slideIn 0.3s ease-out, slideOut 0.3s ease-in 1.7s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Generator Przenoszenia VLAN</h1>
+            <p>Automatyczne przenoszenie urządzeń między VLANami</p>
+        </div>
+
+        <div class="content">
+            <!-- INSTRUKCJA -->
+            <div class="instructions-box">
+                <h2>🔧 Instrukcja migracji urządzenia między VLAN-ami</h2>
+                <ol>
+                    <li><strong>Podłącz komputer</strong> (LAN lub WiFi) i sprawdź jego MAC adres – pojawi się w puli NetBan dla VLAN-u, do którego aktualnie jest podłączony.</li>
+                    <li><strong>Odłącz komputer od sieci</strong> (rozłącz Wi‑Fi / odłącz kabel).</li>
+                    <li><strong>Wykonaj polecenia</strong> z sekcji „<strong>1 – Usuń ze wszystkich VLAN‑ów</strong>", aby usunąć wpisy ARP i DHCP.</li>
+                    <li><strong>Wykonaj polecenia</strong> z sekcji „<strong>2 – Dodaj do docelowego VLAN‑u</strong>", aby przenieść urządzenie z nowym adresem IP.</li>
+                    <li><strong>Podłącz komputer ponownie</strong> – otrzyma adres z nowego VLAN‑u.</li>
+                </ol>
+                <div class="warning">
+                    <strong>⚠️ Uwaga:</strong>
+                    Nie wykonuj migracji przy aktywnym połączeniu – może to spowodować konflikt IP.
+                </div>
+            </div>
+
+            <!-- FORMULARZ -->
+            <div class="form-section">
+                <h2 style="margin-bottom: 20px; color: #667eea;">📝 Dane urządzenia</h2>
+                
+                <div class="form-group">
+                    <label for="macAddress">🔗 MAC Address</label>
+                    <input type="text" id="macAddress" placeholder="np. AA:BB:CC:DD:EE:FF" oninput="validateMAC()">
+                    <small>Format zostanie automatycznie dostosowany</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="deviceName">💻 Nazwa urządzenia (opcjonalnie)</label>
+                    <input type="text" id="deviceName" placeholder="np. Laptop-Jan-Kowalski">
+                </div>
+
+                <div class="form-group">
+                    <label for="targetVlan">🎯 Docelowy VLAN</label>
+                    <select id="targetVlan" onchange="updateIPPrefix()">
+                        <option value="">-- Wybierz VLAN --</option>
+                        <option value="1">VLAN 1 - UniFi_Mgmt</option>
+                        <option value="100">VLAN 100 - Renault</option>
+                        <option value="110">VLAN 110 - Ferrari</option>
+                        <option value="120">VLAN 120 - Peugeot</option>
+                        <option value="130">VLAN 130 - Lamborghini</option>
+                        <option value="140">VLAN 140 - Drukarki</option>
+                        <option value="150">VLAN 150 - IoT</option>
+                        <option value="160">VLAN 160 - VoIP</option>
+                        <option value="170">VLAN 170 - Goscie</option>
+                        <option value="180">VLAN 180 - Backup_Net</option>
+                        <option value="250">VLAN 250 - Mgmt</option>
+                        <option value="300">VLAN 300 - Serwery</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="newIP">🌐 Nowy adres IP (ostatni oktet)</label>
+                    <div class="ip-input-group">
+                        <span class="ip-prefix" id="ipPrefix">10.XXX.XXX.</span>
+                        <input type="number" id="newIP" min="2" max="253" placeholder="2-253">
+                    </div>
+                    <small>Podaj tylko ostatni oktet (2-253)</small>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-detect" onclick="generateDetectCommands()">🔍 WYKRYJ OBECNY VLAN</button>
+                    <button class="btn btn-generate" onclick="generateMigration()">✨ GENERUJ MIGRACJĘ</button>
+                </div>
+            </div>
+
+            <!-- SEKCJA WYKRYWANIA -->
+            <div class="result-section" id="detectResult">
+                <div class="result-step">
+                    <h3>🔍 Wykryj obecny VLAN urządzenia</h3>
+                    <p>Użyj tych komend aby sprawdzić gdzie urządzenie się znajduje</p>
+                    <div class="code-block">
+                        <code id="detectCode"></code>
+                    </div>
+                    <button class="btn btn-copy" onclick="copyDetect()">📋 Kopiuj komendy wykrywające</button>
+                </div>
+            </div>
+
+            <!-- SEKCJA WYNIKÓW MIGRACJI -->
+            <div class="result-section" id="resultSection">
+                <div class="success-box">
+                    <strong>✅ Komendy wygenerowane pomyślnie!</strong><br>
+                    Wykonaj poniższe kroki w kolejności na routerze CCR2004.
+                </div>
+
+                <div class="result-step">
+                    <h3><span class="step-number">1</span> Usuń ze wszystkich VLANów</h3>
+                    <p>Usuwa urządzenie z wszystkich możliwych VLANów (zapobiega konfliktom)</p>
+                    <div class="code-block">
+                        <code id="step1Code"></code>
+                    </div>
+                    <button class="btn btn-copy btn-copy-single" onclick="copyStep1()">📋 Kopiuj</button>
+                </div>
+
+                <div class="result-step">
+                    <h3><span class="step-number">2</span> Dodaj do docelowego VLANu</h3>
+                    <p>Dodaje urządzenie do wybranego VLANu z nowym IP</p>
+                    <div class="code-block">
+                        <code id="step2Code"></code>
+                    </div>
+                    <button class="btn btn-copy btn-copy-single" onclick="copyStep2()">📋 Kopiuj</button>
+                </div>
+
+                <div class="result-step">
+                    <h3><span class="step-number">3</span> Odnów DHCP na urządzeniu</h3>
+                    <div class="info-box">
+                        <strong>Windows:</strong>
+                        <div class="code-block">
+                            <code>ipconfig /release
+ipconfig /renew
+ipconfig /all</code>
+                        </div>
+                        <strong>Linux:</strong>
+                        <div class="code-block">
+                            <code>sudo dhclient -r
+sudo dhclient
+ip addr show</code>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-copy" onclick="copyAll()">📋 KOPIUJ WSZYSTKIE KOMENDY</button>
+            </div>
+
+            <div class="history-section" id="historySection" style="display: none;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">📜 Historia przeniesień</h3>
+                <div id="historyList"></div>
+                <button class="btn" style="background: #6c757d; color: white; margin-top: 10px;" onclick="clearHistory()">🗑️ Wyczyść historię</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vlanData = {
+            '1': { name: 'UniFi_Mgmt', interface: 'vlan1_UniFi_Mgmt', server: 'dhcp_VLAN1_UniFi_Mgmt', subnet: '10.251.251' },
+            '100': { name: 'Renault', interface: 'vlan100_Renault', server: 'dhcp_VLAN100_NetBan', subnet: '10.100.100' },
+            '110': { name: 'Ferrari', interface: 'vlan110_Ferrari', server: 'dhcp_VLAN110_NetBan', subnet: '10.110.110' },
+            '120': { name: 'Peugeot', interface: 'vlan120_Peugeot', server: 'dhcp_VLAN120_NetBan', subnet: '10.120.120' },
+            '130': { name: 'Lamborghini', interface: 'vlan130_Lamborghini', server: 'dhcp_VLAN130_NetBan', subnet: '10.130.130' },
+            '140': { name: 'Drukarki', interface: 'vlan140_Drukarki', server: 'dhcp_VLAN140_NetBan', subnet: '10.140.140' },
+            '150': { name: 'IoT', interface: 'vlan150_IoT', server: 'dhcp_VLAN150_NetBan', subnet: '10.150.150' },
+            '160': { name: 'VoIP', interface: 'vlan160_VoIP', server: 'dhcp_VLAN160_NetBan', subnet: '10.160.160' },
+            '170': { name: 'Goscie', interface: 'vlan170_Goscie', server: 'dhcp_VLAN170_NetBan', subnet: '10.170.170' },
+            '180': { name: 'Backup_Net', interface: 'vlan180_Backup_Net', server: 'dhcp_VLAN180_NetBan', subnet: '10.180.180' },
+            '250': { name: 'Mgmt', interface: 'vlan250_mgmt', server: 'dhcp_mgmt250', subnet: '10.250.250' },
+            '300': { name: 'Serwery', interface: 'vlan300_Serwery', server: 'dhcp_VLAN300_NetBan', subnet: '172.18.254' }
+        };
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<span>✅</span><span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        function validateMAC() {
+            const input = document.getElementById('macAddress');
+            let value = input.value.toUpperCase().replace(/[^A-F0-9]/g, '');
+            
+            if (value.length > 12) value = value.substring(0, 12);
+            
+            const formatted = value.match(/.{1,2}/g)?.join(':') || value;
+            input.value = formatted;
+            
+            const isValid = /^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(formatted);
+            input.classList.remove('mac-valid', 'mac-invalid');
+            if (formatted.length > 0) {
+                input.classList.add(isValid ? 'mac-valid' : 'mac-invalid');
+            }
+            
+            return isValid;
+        }
+
+        function updateIPPrefix() {
+            const vlan = document.getElementById('targetVlan').value;
+            const prefix = document.getElementById('ipPrefix');
+            if (vlan && vlanData[vlan]) {
+                prefix.textContent = `${vlanData[vlan].subnet}.`;
+            } else {
+                prefix.textContent = '10.XXX.XXX.';
+            }
+        }
+
+        function generateDetectCommands() {
+            const mac = document.getElementById('macAddress').value;
+            if (!validateMAC()) {
+                alert('❌ Podaj prawidłowy MAC address!');
+                return;
+            }
+
+            const detectCode = `# Sprawdź gdzie urządzenie jest obecnie
+/ip arp print where mac-address=${mac}
+/ip dhcp-server lease print where mac-address=${mac}`;
+
+            document.getElementById('detectCode').textContent = detectCode;
+            document.getElementById('detectResult').style.display = 'block';
+            document.getElementById('detectResult').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyDetect() {
+            const text = document.getElementById('detectCode').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Komendy wykrywające skopiowane!');
+            });
+        }
+
+        function generateMigration() {
+            const mac = document.getElementById('macAddress').value;
+            const vlan = document.getElementById('targetVlan').value;
+            const ip = document.getElementById('newIP').value;
+            const name = document.getElementById('deviceName').value || 'Device';
+
+            if (!validateMAC()) {
+                alert('❌ Podaj prawidłowy MAC address!');
+                return;
+            }
+            if (!vlan) {
+                alert('❌ Wybierz docelowy VLAN!');
+                return;
+            }
+            if (!ip || ip < 2 || ip > 253) {
+                alert('❌ Podaj prawidłowy adres IP (2-253)!');
+                return;
+            }
+
+            const targetData = vlanData[vlan];
+            const fullIP = `${targetData.subnet}.${ip}`;
+
+            // Krok 1: Usuń ze wszystkich VLANów
+            let step1 = `# KROK 1: Usuń urządzenie ze wszystkich VLANów\n\n`;
+            step1 += `# Usuń wszystkie wpisy ARP\n`;
+            step1 += `/ip arp remove [find mac-address=${mac}]\n\n`;
+            step1 += `# Usuń wszystkie lease DHCP\n`;
+            step1 += `/ip dhcp-server lease remove [find mac-address=${mac}]`;
+
+            // Krok 2: Dodaj do docelowego VLANu
+            let step2 = `# KROK 2: Dodaj do VLAN${vlan} ${targetData.name}\n\n`;
+            step2 += `# Dodaj wpis ARP\n`;
+            step2 += `/ip arp add \\\n`;
+            step2 += `    address=${fullIP} \\\n`;
+            step2 += `    mac-address=${mac} \\\n`;
+            step2 += `    interface=${targetData.interface} \\\n`;
+            step2 += `    comment="${name} - TRUSTED"\n\n`;
+            step2 += `# Dodaj statyczny lease DHCP\n`;
+            step2 += `/ip dhcp-server lease add \\\n`;
+            step2 += `    address=${fullIP} \\\n`;
+            step2 += `    mac-address=${mac} \\\n`;
+            step2 += `    server=${targetData.server} \\\n`;
+            step2 += `    comment="${name} - Produkcja"`;
+
+            document.getElementById('step1Code').textContent = step1;
+            document.getElementById('step2Code').textContent = step2;
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+
+            // Zapisz do historii
+            saveToHistory(mac, vlan, fullIP, name);
+        }
+
+        function copyStep1() {
+            const text = document.getElementById('step1Code').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Polecenie 1 skopiowane!');
+            });
+        }
+
+        function copyStep2() {
+            const text = document.getElementById('step2Code').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Polecenie 2 skopiowane!');
+            });
+        }
+
+        function copyAll() {
+            const step1 = document.getElementById('step1Code').textContent;
+            const step2 = document.getElementById('step2Code').textContent;
+            const allCommands = step1 + '\n\n' + step2;
+            
+            navigator.clipboard.writeText(allCommands).then(() => {
+                showToast('Wszystkie komendy skopiowane!');
+            });
+        }
+
+        function saveToHistory(mac, vlan, ip, name) {
+            let history = JSON.parse(localStorage.getItem('vlanMigrationHistory') || '[]');
+            history.unshift({
+                mac: mac,
+                vlan: vlan,
+                ip: ip,
+                name: name,
+                date: new Date().toLocaleString('pl-PL')
+            });
+            history = history.slice(0, 5); // Ostatnie 5
+            localStorage.setItem('vlanMigrationHistory', JSON.stringify(history));
+            loadHistory();
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('vlanMigrationHistory') || '[]');
+            if (history.length === 0) {
+                document.getElementById('historySection').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('historySection').style.display = 'block';
+            const list = document.getElementById('historyList');
+            list.innerHTML = history.map(item => `
+                <div class="history-item" onclick='loadFromHistory(${JSON.stringify(item)})'>
+                    <strong>${item.name}</strong> (${item.mac})<br>
+                    <small>→ VLAN${item.vlan} - ${item.ip} | ${item.date}</small>
+                </div>
+            `).join('');
+        }
+
+        function loadFromHistory(item) {
+            document.getElementById('macAddress').value = item.mac;
+            document.getElementById('targetVlan').value = item.vlan;
+            document.getElementById('newIP').value = item.ip.split('.').pop();
+            document.getElementById('deviceName').value = item.name;
+            updateIPPrefix();
+            validateMAC();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function clearHistory() {
+            if (confirm('Czy na pewno chcesz wyczyścić historię?')) {
+                localStorage.removeItem('vlanMigrationHistory');
+                loadHistory();
+            }
+        }
+
+        // Załaduj historię przy starcie
+        loadHistory();
+    </script>
+</body>
+</html>
