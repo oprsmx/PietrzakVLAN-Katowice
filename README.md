@@ -15,11 +15,11 @@ Generator poleceń do automatycznego przenoszenia urządzeń między VLANami w R
 - Historia migracji (localStorage)
 - Przyciski kopiowania z powiadomieniami toast
 
-**Link:** [Otwórz narzędzie](https://dariuszplach.github.io/PietrzakVLAN-Katowice/vlan_migration_tool-final-v4-popup.html)
+**Link:** [Otwórz narzędzie](https://oprsmx.github.io/PietrzakVLAN-Katowice/vlan_migration_tool-final-v4-popup.html)
 
 ## 🌐 Strona główna
 
-**Link:** [https://dariuszplach.github.io/PietrzakVLAN-Katowice/](https://dariuszplach.github.io/PietrzakVLAN-Katowice/)
+**Link:** [https://oprsmx.github.io/PietrzakVLAN-Katowice/](https://dariuszplach.github.io/PietrzakVLAN-Katowice/)
 
 ## 📦 Struktura projektu
 
@@ -46,7 +46,7 @@ PietrzakVLAN-Katowice/
 ## 🔗 Integracja z Notion
 
 Aby osadzić narzędzie w Notion:
-1. Skopiuj link do narzędzia (np. `https://dariuszplach.github.io/PietrzakVLAN-Katowice/vlan_migration_tool-final-v4-popup.html`)
+1. Skopiuj link do narzędzia (np. `https://oprsmx.github.io/PietrzakVLAN-Katowice/vlan_migration_tool-final-v4-popup.html`)
 2. W Notion wklej link
 3. Wybierz **"Create embed"**
 
