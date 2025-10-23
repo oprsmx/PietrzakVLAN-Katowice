@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MalyMT (Forti Simulator) - Dokumentacja Techniczna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        .simulator-badge {
+            display: inline-block;
+            background: rgba(255, 193, 7, 0.3);
+            border: 2px solid #ffc107;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+        .device-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .device-info-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .device-info-item strong {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+        .device-info-item span {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .content {
+            padding: 40px;
+        }
+        .role-banner {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+        .role-banner h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        .role-banner p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .toc {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .toc h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+        .toc ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .toc ul li:last-child {
+            border-bottom: none;
+        }
+        .toc ul li a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .toc ul li a:hover {
+            color: #764ba2;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .section-header h2 {
+            font-size: 1.8em;
+        }
+        .section-description {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            line-height: 1.7;
+            color: #333;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+        .info-box strong {
+            color: #2196F3;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #856404;
+            line-height: 1.6;
+        }
+        .warning-box strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #155724;
+            line-height: 1.6;
+        }
+        .success-box strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .simulator-box {
+            background: #fff8e1;
+            border-left: 4px solid #ff9800;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #e65100;
+            line-height: 1.6;
+        }
+        .simulator-box strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .vlan-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .vlan-prod {
+            background: #d4edda;
+            color: #155724;
+        }
+        .vlan-mgmt {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        .vlan-guest {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .vlan-iot {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .code-block code {
+            display: block;
+            white-space: pre;
+        }
+        .comment {
+            color: #6a9955;
+        }
+        .keyword {
+            color: #569cd6;
+        }
+        .string {
+            color: #ce9178;
+        }
+        .number {
+            color: #b5cea8;
+        }
+        .topology-diagram {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .topology-diagram pre {
+            font-family: monospace;
+            font-size: 0.9em;
+            line-height: 1.8;
+            color: #333;
+            display: inline-block;
+            text-align: left;
+        }
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .stat-card .label {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #dee2e6;
+        }
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .tag-trunk {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .tag-access {
+            background: #d4edda;
+            color: #155724;
+        }
+        .tag-isolated {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .tag-nat {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .tag-gateway {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .comparison-table {
+            margin: 30px 0;
+        }
+        .comparison-table th:first-child {
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎭 MalyMT (Fortinet Simulator)</h1>
+            <p>Dokumentacja Techniczna Konfiguracji</p>
+            <div class="simulator-badge">⚠️ SYMULUJE FORTINET FIREWALL</div>
+            <div class="device-info">
+                <div class="device-info-item">
+                    <strong>Model</strong>
+                    <span>C52iG-5HaxD2HaxD</span>
+                </div>
+                <div class="device-info-item">
+                    <strong>RouterOS</strong>
+                    <span>7.11.3</span>
+                </div>
+                <div class="device-info-item">
+                    <strong>Serial Number</strong>
+                    <span>HG409YGK6WB</span>
+                </div>
+                <div class="device-info-item">
+                    <strong>Data eksportu</strong>
+                    <span>2025-10-23</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            
+            <!-- Role Banner -->
+            <div class="role-banner">
+                <h2>🎭 ROLA W INFRASTRUKTURZE</h2>
+                <p>
+                    To urządzenie <strong>SYMULUJE FORTINET FIREWALL</strong> w środowisku testowym.<br>
+                    Pełni funkcję <strong>Default Gateway & NAT Router</strong> dla wszystkich VLANów.<br>
+                    W produkcji ta rola byłaby obsługiwana przez dedykowany Fortinet FortiGate.
+                </p>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h2>📋 Spis treści</h2>
+                <ul>
+                    <li><a href="#overview">1. Przegląd konfiguracji</a></li>
+                    <li><a href="#comparison">2. Porównanie z CCR2004</a></li>
+                    <li><a href="#topology">3. Topologia i rola w sieci</a></li>
+                    <li><a href="#gateway">4. Gateway dla VLANów</a></li>
+                    <li><a href="#nat">5. NAT do Internetu</a></li>
+                    <li><a href="#firewall">6. Reguły Firewall</a></li>
+                    <li><a href="#bridge">7. Bridge i VLAN Configuration</a></li>
+                    <li><a href="#wifi">8. Konfiguracja WiFi</a></li>
+                    <li><a href="#security">9. Security Features</a></li>
+                </ul>
+            </div>
+
+            <!-- Section 1: Overview -->
+            <div id="overview" class="section">
+                <div class="section-header">
+                    <h2>1️⃣ Przegląd konfiguracji</h2>
+                </div>
+                
+                <div class="section-description">
+                    Router <strong>MikroTik C52iG-5HaxD2HaxD</strong> (nazywany "Mały MT") pełni rolę 
+                    <strong>symulowanego Fortinet Firewall</strong>. Jest to <strong>Default Gateway</strong> 
+                    dla wszystkich VLANów oraz wykonuje funkcję <strong>NAT do Internetu</strong>.
+                </div>
+
+                <div class="simulator-box">
+                    <strong>🎭 Dlaczego "symulacja Fortinet"?</strong>
+                    W docelowej architekturze funkcje tego urządzenia (gateway, NAT, firewall) powinny być 
+                    obsługiwane przez dedykowany Fortinet FortiGate. W środowisku testowym/dev wykorzystujemy 
+                    MikroTik C52iG jako ekonomiczną alternatywę z identycznymi funkcjami bezpieczeństwa.
+                </div>
+
+                <div class="network-stats">
+                    <div class="stat-card">
+                        <div class="number">10</div>
+                        <div class="label">Gateway dla VLANów</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">5</div>
+                        <div class="label">Reguł NAT</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">17</div>
+                        <div class="label">Reguł Firewall (IPv4)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">2</div>
+                        <div class="label">Interfejsy WiFi</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Kluczowe funkcje urządzenia:</strong>
+                    • Default gateway dla wszystkich sieci (adres .1 w każdym VLANie)<br>
+                    • NAT/masquerade do Internetu przez ether1 (WAN)<br>
+                    • Firewall z izolacją Guests, IoT, VoIP<br>
+                    • NetBan mechanism (blokada 100.110.110.0/24)<br>
+                    • Bridge z VLAN filtering<br>
+                    • WiFi Access Point (2 interfejsy)
+                </div>
+            </div>
+
+            <!-- Section 2: Comparison -->
+            <div id="comparison" class="section">
+                <div class="section-header">
+                    <h2>2️⃣ Porównanie z CCR2004</h2>
+                </div>
+
+                <div class="section-description">
+                    Środowisko wykorzystuje <strong>dwa routery MikroTik</strong> z wyraźnie rozdzielonymi rolami.
+                    Poniżej szczegółowe porównanie funkcji każdego urządzenia.
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Funkcja</th>
+                            <th>CCR2004-L3-DHCP (Core Switch)</th>
+                            <th>MalyMT (Fortinet Simulator)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Model urządzenia</strong></td>
+                            <td>CCR2004-16G-2S+</td>
+                            <td>C52iG-5HaxD2HaxD</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rola główna</strong></td>
+                            <td>Core L3 Switch + DHCP Server</td>
+                            <td>Default Gateway + NAT Router (Forti)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adres IP w VLANach</strong></td>
+                            <td>.254 (np. 10.100.100.254)</td>
+                            <td>.1 (np. 10.100.100.1) - GATEWAY</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DHCP Server</strong></td>
+                            <td>✅ Tak (dual-pool: prod + NetBan)</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Default Gateway dla VLANów</strong></td>
+                            <td>❌ Nie (forward do MalyMT)</td>
+                            <td>✅ Tak (dla wszystkich VLANów)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NAT do Internetu</strong></td>
+                            <td>❌ Nie</td>
+                            <td>✅ Tak (masquerade via ether1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Static ARP</strong></td>
+                            <td>✅ Tak (trusted devices + MalyMT)</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bridge VLAN Filtering</strong></td>
+                            <td>✅ Tak</td>
+                            <td>✅ Tak</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firewall (Forward chain)</strong></td>
+                            <td>✅ Tak (isolation rules)</td>
+                            <td>✅ Tak (identical rules + NetBan)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WiFi</strong></td>
+                            <td>❌ Nie</td>
+                            <td>✅ Tak (2x WiFi interfaces)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Connection do WAN</strong></td>
+                            <td>ether2 → MalyMT</td>
+                            <td>ether1 → ISP (DHCP client)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trunk port</strong></td>
+                            <td>sfp-sfpplus2 → Aggregation SW</td>
+                            <td>ether4 → CCR2004</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>⚠️ Flow ruchu w infrastrukturze:</strong>
+                    1. Klient otrzymuje IP z DHCP na <strong>CCR2004</strong><br>
+                    2. Klient komunikuje się w ramach VLANa przez <strong>CCR2004</strong><br>
+                    3. Ruch do Internetu jest forwardowany do <strong>MalyMT</strong> (gateway .1)<br>
+                    4. <strong>MalyMT</strong> wykonuje NAT i wysyła pakiety przez ether1 do ISP<br>
+                    5. Odpowiedzi wracają tą samą ścieżką
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Dlaczego taki podział?</strong>
+                    • <strong>CCR2004</strong> = wydajny L3 switch do VLAN routing + DHCP<br>
+                    • <strong>MalyMT</strong> = security perimeter (firewall + NAT)<br>
+                    • Separacja funkcji zwiększa bezpieczeństwo i ułatwia troubleshooting<br>
+                    • W przyszłości MalyMT może być zastąpiony Fortinet bez zmian w CCR2004
+                </div>
+            </div>
+
+            <!-- Section 3: Topology -->
+            <div id="topology" class="section">
+                <div class="section-header">
+                    <h2>3️⃣ Topologia i rola w sieci</h2>
+                </div>
+
+                <div class="section-description">
+                    MalyMT stanowi <strong>security perimeter</strong> między siecią wewnętrzną a Internetem.
+                    Wszystkie VLANy mają swój default gateway na tym urządzeniu.
+                </div>
+
+                <div class="topology-diagram">
+                    <pre>
+                    Internet (ISP)
+                        |
+                    [DHCP Client]
+                        |
+                    ether1 (WAN)
+                        |
+    ┌───────────────────┴───────────────────┐
+    │                                       │
+    │    MikroTik C52iG-5HaxD2HaxD         │
+    │         (MalyMT / Forti Sim)         │
+    │    RouterOS 7.11.3 | bridge1         │
+    │                                       │
+    │  🛡️ FIREWALL + NAT + GATEWAY         │
+    │                                       │
+    └───┬────────┬─────────┬──────┬─────┬──┘
+        │        │         │      │     │
+     ether2   ether3   ether4  ether5  WiFi
+        │        │         │      │     │
+    [bridge] [bridge] [TRUNK] [Access] [AP]
+                         │
+                         │ All VLANs tagged
+                         │
+                         ↓
+                   CCR2004-L3-DHCP
+                   (Core L3 Switch)
+                         │
+                         ↓
+                  [End Devices]
+                    </pre>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Interface</th>
+                            <th>Typ</th>
+                            <th>Połączenie</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ether1</strong></td>
+                            <td><span class="tag tag-isolated">WAN</span></td>
+                            <td>ISP (DHCP Client)</td>
+                            <td>Uplink do Internetu</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ether2</strong></td>
+                            <td><span class="tag tag-access">BRIDGE</span></td>
+                            <td>bridge1</td>
+                            <td>Management access</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ether3</strong></td>
+                            <td><span class="tag tag-access">BRIDGE</span></td>
+                            <td>bridge1</td>
+                            <td>LAN access</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ether4</strong></td>
+                            <td><span class="tag tag-trunk">TRUNK</span></td>
+                            <td>CCR2004 (All VLANs tagged)</td>
+                            <td>Trunk do Core Switch</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ether5</strong></td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>bridge1 + VLAN110 untagged</td>
+                            <td>Access port</td>
+                        </tr>
+                        <tr>
+                            <td><strong>wifi1</strong></td>
+                            <td><span class="tag tag-access">BRIDGE</span></td>
+                            <td>bridge1 (2.4GHz)</td>
+                            <td>WiFi AP (MikroTik-28AF19)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>wifi2</strong></td>
+                            <td><span class="tag tag-access">BRIDGE</span></td>
+                            <td>bridge1 (5GHz)</td>
+                            <td>WiFi AP (MikroTik-28AF1A)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="simulator-box">
+                    <strong>🎭 W prawdziwym Fortinet:</strong>
+                    ether1 byłby skonfigurowany jako WAN interface z IPsec VPN, SSL VPN, IPS/IDS.<br>
+                    ether4 byłby LAN interface z VLAN sub-interfaces dla każdego segmentu.<br>
+                    MalyMT symuluje tę funkcjonalność używając standardowego MikroTik routing + NAT.
+                </div>
+            </div>
+
+            <!-- Section 4: Gateway -->
+            <div id="gateway" class="section">
+                <div class="section-header">
+                    <h2>4️⃣ Gateway dla VLANów</h2>
+                </div>
+
+                <div class="section-description">
+                    MalyMT jest <strong>default gateway</strong> (adres .1) dla wszystkich VLANów. 
+                    CCR2004 forwarduje pakiety kierowane poza VLAN do MalyMT, który następnie wykonuje routing i NAT.
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VLAN ID</th>
+                            <th>Nazwa</th>
+                            <th>Gateway IP (MalyMT)</th>
+                            <th>Sieć</th>
+                            <th>Interface</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1</strong></td>
+                            <td>UniFi_Mgmt</td>
+                            <td>10.251.251.1</td>
+                            <td>10.251.251.0/24</td>
+                            <td>bridge1</td>
+                        </tr>
+                        <tr>
+                            <td><strong>100</strong></td>
+                            <td>Renault</td>
+                            <td>10.100.100.1</td>
+                            <td>10.100.100.0/24</td>
+                            <td>vlan100_Renault (bridge1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>110</strong></td>
+                            <td>Ferrari</td>
+                            <td>10.110.110.1</td>
+                            <td>10.110.110.0/24</td>
+                            <td>vlan110_Ferrari (ether4)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>120</strong></td>
+                            <td>Peugeot</td>
+                            <td>10.120.120.1</td>
+                            <td>10.120.120.0/24</td>
+                            <td>vlan120_Peugeot (ether4)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>130</strong></td>
+                            <td>Lamborghini</td>
+                            <td>10.130.130.1</td>
+                            <td>10.130.130.0/24</td>
+                            <td>vlan130_Lamborghini (ether4)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>140</strong></td>
+                            <td>Drukarki</td>
+                            <td>10.140.140.1</td>
+                            <td>10.140.140.0/24</td>
+                            <td>vlan140_Drukarki (bridge1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>150</strong></td>
+                            <td>IoT</td>
+                            <td>10.150.150.1</td>
+                            <td>10.150.150.0/24</td>
+                            <td>vlan150_IoT (bridge1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>160</strong></td>
+                            <td>VoIP</td>
+                            <td>10.160.160.1</td>
+                            <td>10.160.160.0/24</td>
+                            <td>vlan160_VoIP (bridge1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>170</strong></td>
+                            <td>Goscie</td>
+                            <td>10.170.170.1</td>
+                            <td>10.170.170.0/24</td>
+                            <td>vlan170_Goscie (bridge1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>180</strong></td>
+                            <td>Backup_Net</td>
+                            <td>10.180.180.1</td>
+                            <td>10.180.180.0/24</td>
+                            <td>vlan180_Backup_Net (bridge1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>300</strong></td>
+                            <td>Serwery</td>
+                            <td>172.18.254.1</td>
+                            <td>172.18.254.0/23</td>
+                            <td>vlan300_Serwery (bridge1)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>ℹ️ Interfejsy VLAN:</strong>
+                    • VLANy 110, 120, 130 są na <strong>ether4</strong> (bezpośrednie połączenie VLAN sub-interfaces)<br>
+                    • Pozostałe VLANy są na <strong>bridge1</strong> (VLAN filtering)<br>
+                    • bridge1 ma przypisany adres 10.251.251.1 (VLAN1 - UniFi Management)
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># Przykłady konfiguracji gateway IP</span>
+/ip address
+add <span class="keyword">address=</span><span class="string">10.251.251.1/24</span> <span class="keyword">comment=</span><span class="string">defconf</span> \
+    <span class="keyword">interface=</span>bridge1 <span class="keyword">network=</span><span class="string">10.251.251.0</span>
+
+add <span class="keyword">address=</span><span class="string">10.110.110.1/24</span> <span class="keyword">comment=</span><span class="string">"Bramka VLAN110"</span> \
+    <span class="keyword">interface=</span>vlan110_Ferrari <span class="keyword">network=</span><span class="string">10.110.110.0</span>
+
+add <span class="keyword">address=</span><span class="string">172.18.254.1/23</span> <span class="keyword">comment=</span><span class="string">"Bramka VLAN300 Serwery"</span> \
+    <span class="keyword">interface=</span>vlan300_Serwery <span class="keyword">network=</span><span class="string">172.18.254.0</span></code>
+                </div>
+            </div>
+
+            <!-- Section 5: NAT -->
+            <div id="nat" class="section">
+                <div class="section-header">
+                    <h2>5️⃣ NAT do Internetu</h2>
+                </div>
+
+                <div class="section-description">
+                    MalyMT wykonuje <strong>Source NAT (masquerade)</strong> dla wszystkich sieci wewnętrznych 
+                    przed wysłaniem ruchu do Internetu przez ether1 (WAN interface).
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reguła</th>
+                            <th>Action</th>
+                            <th>Source Network</th>
+                            <th>Out Interface</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><span class="tag tag-nat">MASQUERADE</span></td>
+                            <td>All (defconf)</td>
+                            <td>WAN list</td>
+                            <td>Default masquerade rule</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><span class="tag tag-nat">MASQUERADE</span></td>
+                            <td>10.110.110.0/24</td>
+                            <td>ether1</td>
+                            <td>NAT VLAN110 Ferrari</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><span class="tag tag-nat">MASQUERADE</span></td>
+                            <td>10.120.120.0/24</td>
+                            <td>ether1</td>
+                            <td>NAT VLAN120 Peugeot</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><span class="tag tag-nat">MASQUERADE</span></td>
+                            <td>172.18.254.0/23</td>
+                            <td>ether1</td>
+                            <td>NAT VLAN300 Serwery</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><span class="tag tag-nat">MASQUERADE</span></td>
+                            <td>10.160.160.0/24</td>
+                            <td>ether1</td>
+                            <td>NAT VLAN160 VoIP</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><span class="tag tag-nat">MASQUERADE</span></td>
+                            <td>10.170.170.0/24</td>
+                            <td>ether1</td>
+                            <td>NAT VLAN170 Goscie</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>⚠️ Dlaczego wiele reguł NAT?</strong>
+                    Chociaż pierwsza reguła (defconf masquerade) teoretycznie wystarczy, dodatkowe reguły 
+                    dla konkretnych VLANów umożliwiają:<br>
+                    • Precyzyjne logowanie ruchu per-VLAN<br>
+                    • Łatwiejszy troubleshooting<br>
+                    • Możliwość dodania specyficznych policy (QoS, rate-limit) w przyszłości<br>
+                    • Przygotowanie do ewentualnego Port Forwarding per-VLAN
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># NAT Configuration</span>
+/ip firewall nat
+add <span class="keyword">action=</span>masquerade <span class="keyword">chain=</span>srcnat \
+    <span class="keyword">comment=</span><span class="string">"defconf: masquerade"</span> \
+    <span class="keyword">ipsec-policy=</span>out,none <span class="keyword">out-interface-list=</span>WAN
+
+add <span class="keyword">action=</span>masquerade <span class="keyword">chain=</span>srcnat \
+    <span class="keyword">comment=</span><span class="string">"NAT VLAN110 to WAN"</span> \
+    <span class="keyword">out-interface=</span>ether1 <span class="keyword">src-address=</span><span class="string">10.110.110.0/24</span>
+
+add <span class="keyword">action=</span>masquerade <span class="keyword">chain=</span>srcnat \
+    <span class="keyword">comment=</span><span class="string">"NAT VLAN170 Goscie"</span> \
+    <span class="keyword">out-interface=</span>ether1 <span class="keyword">src-address=</span><span class="string">10.170.170.0/24</span></code>
+                </div>
+
+                <div class="simulator-box">
+                    <strong>🎭 W prawdziwym Fortinet:</strong>
+                    Fortinet używałby policy-based NAT z automatycznym source NAT w firewall policies.<br>
+                    Dodatkowo obsługiwałby VIP (Virtual IP) dla Port Forwarding oraz Central SNAT.<br>
+                    MalyMT replikuje podstawową funkcjonalność masquerade.
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ WAN Configuration:</strong>
+                    • ether1 skonfigurowany jako DHCP client (automatyczny IP od ISP)<br>
+                    • Interface list "WAN" zawiera ether1<br>
+                    • DNS: allow-remote-requests=yes (router jest DNS proxy dla klientów)
+                </div>
+            </div>
+
+            <!-- Section 6: Firewall -->
+            <div id="firewall" class="section">
+                <div class="section-header">
+                    <h2>6️⃣ Reguły Firewall</h2>
+                </div>
+
+                <div class="section-description">
+                    Firewall implementuje <strong>identyczne reguły bezpieczeństwa co CCR2004</strong> 
+                    plus dodatkowe features: NetBan mechanism i rozszerzone defconf rules.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔒 Address Lists</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lista</th>
+                            <th>Sieci</th>
+                            <th>Zastosowanie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>grupa_robocza</strong></td>
+                            <td>VLAN100,110,120,130,140,300</td>
+                            <td>Sieci produkcyjne z wzajemną komunikacją</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🛡️ Forward Chain Rules (IPv4)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Action</th>
+                            <th>Opis</th>
+                            <th>Source/Destination</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #fff3cd;">
+                            <td>1</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td><strong>NetBan - zbanowani</strong></td>
+                            <td>src=100.110.110.0/24</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow EST/REL connections</td>
+                            <td>connection-state=established,related</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Drop invalid packets</td>
+                            <td>connection-state=invalid</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Protect Management VLAN250</td>
+                            <td>dst=10.250.250.0/24</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow Guest → UCK2 Captive Portal</td>
+                            <td>src=10.170.170.0/24 → dst=10.251.251.10:8843,8880,8443</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Protect UniFi VLAN1</td>
+                            <td>dst=10.251.251.0/24</td>
+                        </tr>
+                        <tr>
+                            <td>7-9</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Isolate Guests - block RFC1918</td>
+                            <td>src=10.170.170.0/24 → dst=10/8, 172.16/12, 192.168/16</td>
+                        </tr>
+                        <tr>
+                            <td>10-12</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Isolate IoT - block RFC1918</td>
+                            <td>src=10.150.150.0/24 → dst=10/8, 172.16/12, 192.168/16</td>
+                        </tr>
+                        <tr>
+                            <td>13-15</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Isolate VoIP - block RFC1918</td>
+                            <td>src=10.160.160.0/24 → dst=10/8, 172.16/12, 192.168/16</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Block access TO Backup_Net</td>
+                            <td>dst=10.180.180.0/24, src-list≠BackupNet_allow</td>
+                        </tr>
+                        <tr>
+                            <td>17</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow grupa_robocza inter-communication</td>
+                            <td>src-list=grupa_robocza → dst-list=grupa_robocza</td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow all to Internet</td>
+                            <td>(catch-all rule)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>⚠️ NetBan Mechanism (Reguła #1):</strong>
+                    Pierwsza reguła firewall to <strong>NetBan</strong> - blokuje cały ruch z sieci 100.110.110.0/24.<br>
+                    Jest to fake DHCP pool używany przez CCR2004 do izolacji problemowych urządzeń.<br>
+                    Gdy CCR2004 przydzieli urządzeniu IP z puli NetBan, MalyMT automatycznie blokuje jego ruch.
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Defconf Rules (disabled):</strong>
+                    Wiele domyślnych reguł MikroTik (defconf) jest wyłączonych (disabled=yes), ponieważ 
+                    zostały zastąpione custom rules bardziej dopasowanymi do środowiska produkcyjnego.<br>
+                    • Fasttrack - wyłączony (conflicts with firewall logging)<br>
+                    • ICMP accept - wyłączony (selektywnie włączony per-VLAN)<br>
+                    • WAN drop - wyłączony (custom rules handle this)
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># NetBan + Isolation Examples</span>
+/ip firewall filter
+<span class="comment"># NetBan - FIRST RULE (highest priority)</span>
+add <span class="keyword">action=</span>drop <span class="keyword">chain=</span>forward \
+    <span class="keyword">comment=</span><span class="string">"NetBan zbanowani"</span> \
+    <span class="keyword">src-address=</span><span class="string">100.110.110.0/24</span>
+
+<span class="comment"># Guest Isolation</span>
+add <span class="keyword">action=</span>drop <span class="keyword">chain=</span>forward \
+    <span class="keyword">comment=</span><span class="string">"FWD: Isolate Guests - block 10.0.0.0/8"</span> \
+    <span class="keyword">dst-address=</span><span class="string">10.0.0.0/8</span> <span class="keyword">src-address=</span><span class="string">10.170.170.0/24</span></code>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🌐 IPv6 Firewall</h3>
+                <div class="success-box">
+                    <strong>✅ IPv6 Security:</strong>
+                    Router zawiera kompletny zestaw reguł IPv6 firewall (defconf):<br>
+                    • Bad IPv6 address list (unspecified, loopback, site-local, etc.)<br>
+                    • Drop invalid connections<br>
+                    • Accept ICMPv6, IKE, IPsec<br>
+                    • Drop everything not from LAN<br>
+                    <br>
+                    Aktualnie IPv6 nie jest używany w produkcji, ale rules są gotowe.
+                </div>
+            </div>
+
+            <!-- Section 7: Bridge -->
+            <div id="bridge" class="section">
+                <div class="section-header">
+                    <h2>7️⃣ Bridge i VLAN Configuration</h2>
+                </div>
+
+                <div class="section-description">
+                    Bridge1 łączy porty LAN (ether2, ether3, ether5) oraz WiFi interfaces. 
+                    VLAN filtering jest włączony. Trunk port (ether4) łączy MalyMT z CCR2004.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔌 Bridge Port Membership</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Port</th>
+                            <th>Bridge</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ether2</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>LAN port (defconf)</td>
+                        </tr>
+                        <tr>
+                            <td>ether3</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>LAN port (defconf)</td>
+                        </tr>
+                        <tr>
+                            <td>ether4</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-trunk">TRUNK</span></td>
+                            <td>Trunk do CCR2004 (All VLANs tagged)</td>
+                        </tr>
+                        <tr>
+                            <td>ether5</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>VLAN110 untagged</td>
+                        </tr>
+                        <tr>
+                            <td>wifi1</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>WiFi 2.4GHz (defconf)</td>
+                        </tr>
+                        <tr>
+                            <td>wifi2</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>WiFi 5GHz (defconf)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🏷️ VLAN Membership</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VLAN ID</th>
+                            <th>Tagged Ports</th>
+                            <th>Untagged Ports</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>100</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>Renault</td>
+                        </tr>
+                        <tr>
+                            <td><strong>110</strong></td>
+                            <td>ether4</td>
+                            <td>ether5</td>
+                            <td>Ferrari</td>
+                        </tr>
+                        <tr>
+                            <td><strong>120</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>Peugeot</td>
+                        </tr>
+                        <tr>
+                            <td><strong>130</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>Lamborghini</td>
+                        </tr>
+                        <tr>
+                            <td><strong>140</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>Drukarki</td>
+                        </tr>
+                        <tr>
+                            <td><strong>150</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>IoT</td>
+                        </tr>
+                        <tr>
+                            <td><strong>160</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>VoIP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>170</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>Goscie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>180</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>Backup_Net</td>
+                        </tr>
+                        <tr>
+                            <td><strong>300</strong></td>
+                            <td>bridge1, ether4</td>
+                            <td>-</td>
+                            <td>Serwery</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>ℹ️ Bridge Configuration:</strong>
+                    • admin-mac: D4:01:C3:28:AF:15 (static MAC)<br>
+                    • auto-mac: no (prevents MAC changes)<br>
+                    • vlan-filtering: yes<br>
+                    • Wszystkie VLANy są tagged na ether4 (trunk do CCR2004)<br>
+                    • VLAN110 dodatkowo untagged na ether5 (direct access)
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># Bridge Configuration</span>
+/interface bridge
+add <span class="keyword">admin-mac=</span>D4:01:C3:28:AF:15 <span class="keyword">auto-mac=</span>no \
+    <span class="keyword">comment=</span>defconf <span class="keyword">name=</span>bridge1 <span class="keyword">vlan-filtering=</span>yes
+
+<span class="comment"># VLAN Membership Examples</span>
+/interface bridge vlan
+add <span class="keyword">bridge=</span>bridge1 <span class="keyword">tagged=</span>bridge1,ether4 <span class="keyword">vlan-ids=</span><span class="number">100</span>
+add <span class="keyword">bridge=</span>bridge1 <span class="keyword">tagged=</span>ether4 <span class="keyword">untagged=</span>ether5 <span class="keyword">vlan-ids=</span><span class="number">110</span>
+add <span class="keyword">bridge=</span>bridge1 <span class="keyword">comment=</span><span class="string">"VLAN300 tagged"</span> \
+    <span class="keyword">tagged=</span>bridge1,ether4 <span class="keyword">vlan-ids=</span><span class="number">300</span></code>
+                </div>
+            </div>
+
+            <!-- Section 8: WiFi -->
+            <div id="wifi" class="section">
+                <div class="section-header">
+                    <h2>8️⃣ Konfiguracja WiFi</h2>
+                </div>
+
+                <div class="section-description">
+                    MalyMT posiada <strong>dwa interfejsy WiFi</strong> (wave2) pracujące w trybie Access Point. 
+                    Oba interfejsy są członkami bridge1 i zapewniają dostęp do sieci VLAN1 (UniFi Management).
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Interface</th>
+                            <th>SSID</th>
+                            <th>Pasmo</th>
+                            <th>Security</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>wifi1</strong></td>
+                            <td>MikroTik-28AF19</td>
+                            <td>2.4 GHz</td>
+                            <td>WPA2-PSK, WPA3-PSK</td>
+                            <td><span class="tag tag-access">ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>wifi2</strong></td>
+                            <td>MikroTik-28AF1A</td>
+                            <td>5 GHz</td>
+                            <td>WPA2-PSK, WPA3-PSK</td>
+                            <td><span class="tag tag-access">ACTIVE</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>ℹ️ WiFi Configuration Details:</strong>
+                    • <strong>Mode:</strong> AP (Access Point)<br>
+                    • <strong>Authentication:</strong> WPA2-PSK + WPA3-PSK (mixed mode)<br>
+                    • <strong>DFS Channels:</strong> skip-dfs-channels=10min-cac (unikaj kanałów radarowych)<br>
+                    • <strong>Bridge:</strong> Oba interfejsy są w bridge1<br>
+                    • <strong>VLAN:</strong> Klienci WiFi otrzymują dostęp do VLAN1 (10.251.251.0/24)
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Security Considerations:</strong>
+                    • WPA3 zapewnia lepszą ochronę przed dictionary attacks<br>
+                    • Mixed mode (WPA2+WPA3) dla kompatybilności ze starszymi urządzeniami<br>
+                    • Rozważ utworzenie osobnego SSID dla gości (VLAN170)<br>
+                    • Hasło WiFi powinno być silne (min. 16 znaków)
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># WiFi Configuration</span>
+/interface wifiwave2
+set [ find <span class="keyword">default-name=</span>wifi1 ] \
+    <span class="keyword">channel.skip-dfs-channels=</span><span class="string">10min-cac</span> \
+    <span class="keyword">configuration.mode=</span>ap <span class="keyword">.ssid=</span><span class="string">MikroTik-28AF19</span> \
+    <span class="keyword">disabled=</span>no \
+    <span class="keyword">security.authentication-types=</span><span class="string">wpa2-psk,wpa3-psk</span>
+
+set [ find <span class="keyword">default-name=</span>wifi2 ] \
+    <span class="keyword">channel.skip-dfs-channels=</span><span class="string">10min-cac</span> \
+    <span class="keyword">configuration.mode=</span>ap <span class="keyword">.ssid=</span><span class="string">MikroTik-28AF1A</span> \
+    <span class="keyword">disabled=</span>no \
+    <span class="keyword">security.authentication-types=</span><span class="string">wpa2-psk,wpa3-psk</span></code>
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Recommended WiFi Setup dla gości:</strong>
+                    1. Utwórz drugi SSID (np. "Guest-WiFi")<br>
+                    2. Przypisz go do VLAN170 (Goscie)<br>
+                    3. Włącz client isolation<br>
+                    4. Captive Portal będzie obsługiwany przez UniFi Controller (10.251.251.10)
+                </div>
+            </div>
+
+            <!-- Section 9: Security -->
+            <div id="security" class="section">
+                <div class="section-header">
+                    <h2>9️⃣ Security Features</h2>
+                </div>
+
+                <div class="section-description">
+                    MalyMT jako <strong>security perimeter</strong> implementuje wielowarstwowe zabezpieczenia.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔒 Security Features Summary</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Warstwa</th>
+                            <th>Mechanizm</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Network</strong></td>
+                            <td>NAT/Masquerade</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firewall</strong></td>
+                            <td>Stateful Inspection (est/rel)</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firewall</strong></td>
+                            <td>Network Isolation (Guests, IoT, VoIP)</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firewall</strong></td>
+                            <td>NetBan Mechanism</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Firewall</strong></td>
+                            <td>Management VLAN Protection</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>L2</strong></td>
+                            <td>VLAN Filtering</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>WiFi</strong></td>
+                            <td>WPA2-PSK + WPA3-PSK</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>IPv6</strong></td>
+                            <td>Firewall rules (defconf)</td>
+                            <td><span class="tag tag-access">✅ READY</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Management</strong></td>
+                            <td>MAC Server (LAN only)</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Management</strong></td>
+                            <td>Neighbor Discovery (LAN only)</td>
+                            <td><span class="tag tag-access">✅ ACTIVE</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="simulator-box">
+                    <strong>🎭 W prawdziwym Fortinet:</strong>
+                    Dodatkowo dostępne byłyby:<br>
+                    • <strong>IPS/IDS</strong> - Intrusion Prevention/Detection System<br>
+                    • <strong>Application Control</strong> - kontrola aplikacji (P2P, social media)<br>
+                    • <strong>Web Filter</strong> - filtrowanie zawartości web<br>
+                    • <strong>Antivirus</strong> - skanowanie ruchu<br>
+                    • <strong>SSL Inspection</strong> - deep packet inspection HTTPS<br>
+                    • <strong>VPN</strong> - IPsec, SSL VPN<br>
+                    • <strong>DLP</strong> - Data Loss Prevention<br>
+                    <br>
+                    MalyMT zapewnia podstawowe funkcje firewall i NAT, które są fundamentem bezpieczeństwa.
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Rekomendacje bezpieczeństwa:</strong>
+                    • <strong>Zmień domyślne hasła</strong> admin i WiFi<br>
+                    • <strong>Włącz logging</strong> dla firewall rules (troubleshooting)<br>
+                    • <strong>Regularnie aktualizuj</strong> RouterOS do najnowszej wersji stable<br>
+                    • <strong>Backup konfiguracji</strong> przed zmianami<br>
+                    • <strong>Monitor WAN traffic</strong> pod kątem anomalii<br>
+                    • <strong>Rozważ VPN</strong> dla remote access (IPsec lub Wireguard)
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Best Practices implemented:</strong>
+                    • WAN interface izolowany od LAN (firewall)<br>
+                    • Management access tylko z LAN (MAC Server, Neighbor Discovery)<br>
+                    • Guest network isolation (VLAN170)<br>
+                    • IoT devices isolation (VLAN150)<br>
+                    • DNS proxy dla klientów (allow-remote-requests)<br>
+                    • Static MAC address on bridge (prevents MAC spoofing)<br>
+                    • Timezone configured (Europe/Warsaw)
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ DNS Configuration:</strong>
+                    Router działa jako <strong>DNS proxy</strong> dla klientów wewnętrznych:<br>
+                    • allow-remote-requests=yes<br>
+                    • Static DNS entry: router.lan → 10.251.251.1<br>
+                    • Klienci używają gateway (.1) jako DNS server<br>
+                    • Router forward queries do public DNS (z DHCP na WAN)
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Dokumentacja wygenerowana:</strong> 2025-10-23</p>
+            <p><strong>Źródło:</strong> malyMT-all-23102025.rsc</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                <strong>PietrzakVLAN-Katowice</strong> | Network Management & Documentation
+            </p>
+            <p style="margin-top: 10px; padding: 10px; background: #fff8e1; border-radius: 5px; color: #e65100;">
+                <strong>🎭 UWAGA:</strong> To urządzenie <strong>SYMULUJE FORTINET FIREWALL</strong> w środowisku testowym.<br>
+                W produkcji należy rozważyć dedykowany Fortinet FortiGate dla pełnej funkcjonalności security.
+            </p>
+            <p style="font-size: 0.85em; color: #999; margin-top: 10px;">
+                © 2025 | Katowice, Śląsk | RouterOS 7.11.3
+            </p>
+        </div>
+    </div>
+</body>
+</html>
