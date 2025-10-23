@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Pietrzak‑VLAN — MikroTik (Forti symulator) Firewall – pełna dokumentacja</title>
+<style>
+  body{font-family:'DejaVu Sans',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;margin:0;background:linear-gradient(135deg,#2b1055,#7597de);color:#fff}
+  .wrap{max-width:1200px;margin:40px auto;padding:28px;background:rgba(255,255,255,.10);border-radius:18px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+  h1{text-align:center;margin-bottom:8px}
+  h2{margin-top:28px;color:#ffd166;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:6px}
+  pre{background:rgba(0,0,0,.55);padding:14px;border-radius:12px;overflow:auto;color:#00ffea}
+  .copy{margin-top:10px;border:0;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;background:#06d6a0;color:#000}
+  .copy:hover{background:#04b383}
+  .note{color:#aaffaa;font-style:italic}
+  footer{text-align:center;margin-top:28px;font-size:13px;color:#cbd5e1}
+</style>
+<script>
+function copyBlock(id){const el=document.getElementById(id);if(el)navigator.clipboard.writeText(el.textContent);}
+</script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🔥 Pietrzak‑VLAN — MikroTik (Forti symulator) Firewall</h1>
+    <p>Dokument zawiera pełną konfigurację i opis reguł firewalla routera pełniącego rolę <b>Forti symulatora / routera L3</b> w projekcie <b>Pietrzak‑VLAN</b>. Stan na <b>23.10.2025</b>.</p>
+
+    <h2>1️⃣ Rola urządzenia</h2>
+    <ul>
+      <li>Router L3 pomiędzy wszystkimi VLAN‑ami (bramy .1 w każdej podsieci).</li>
+      <li>Realny firewall L3 – egzekwuje polityki ruchu między VLAN‑ami i do Internetu.</li>
+      <li>CCR pełni rolę L2/VLAN kontrolera – ruch L3 filtrowany tu.</li>
+    </ul>
+
+    <h2>2️⃣ Pełny eksport reguł <code>/ip firewall filter</code></h2>
+    <pre id="forti-filter">/ip firewall filter
+add action=accept chain=input comment="defconf: accept established,related,untracked" connection-state=established,related,untracked
+add action=drop chain=input comment="defconf: drop invalid" connection-state=invalid disabled=yes
+add action=accept chain=input comment="defconf: accept ICMP" disabled=yes protocol=icmp
+add action=accept chain=input comment="defconf: accept to local loopback (for CAPsMAN)" disabled=yes dst-address=127.0.0.1
+add action=drop chain=input comment="defconf: drop all not coming from LAN" disabled=yes in-interface-list=!LAN
+add action=accept chain=forward comment="defconf: accept in ipsec policy" disabled=yes ipsec-policy=in,ipsec
+add action=accept chain=forward comment="defconf: accept out ipsec policy" disabled=yes ipsec-policy=out,ipsec
+add action=fasttrack-connection chain=forward comment="defconf: fasttrack" connection-state=established,related disabled=yes hw-offload=yes
+add action=accept chain=forward comment="defconf: accept established,related, untracked" connection-state=established,related,untracked disabled=yes
+add action=drop chain=forward comment="defconf: drop invalid" connection-state=invalid disabled=yes
+add action=drop chain=forward comment="defconf: drop all from WAN not DSTNATed" connection-nat-state=!dstnat connection-state=new disabled=yes in-interface-list=WAN
+add action=drop chain=forward comment="NetBan  zbanowani" src-address=100.110.110.0/24
+add action=accept chain=forward comment="FWD: Allow EST/REL" connection-state=established,related
+add action=drop chain=forward comment="FWD: Drop invalid" connection-state=invalid
+add action=drop chain=forward comment="FWD: Protect Management VLAN250" dst-address=10.250.250.0/24
+add action=accept chain=forward comment="Allow Guest -> UCK2 Captive Portal" dst-address=10.251.251.10 port=8843,8880,8443 protocol=tcp src-address=10.170.170.0/24
+add action=drop chain=forward comment="FWD: Protect UniFi VLAN1" dst-address=10.251.251.0/24
+add action=drop chain=forward comment="FWD: Isolate Guests - block 10.0.0.0/8" dst-address=10.0.0.0/8 src-address=10.170.170.0/24
+add action=drop chain=forward comment="FWD: Isolate Guests - block 172.16.0.0/12" dst-address=172.16.0.0/12 src-address=10.170.170.0/24
+add action=drop chain=forward comment="FWD: Isolate Guests - block 192.168.0.0/16" dst-address=192.168.0.0/16 src-address=10.170.170.0/24
+add action=drop chain=forward comment="FWD: Isolate IoT - block 10.0.0.0/8" dst-address=10.0.0.0/8 src-address=10.150.150.0/24
+add action=drop chain=forward comment="FWD: Isolate IoT - block 172.16.0.0/12" dst-address=172.16.0.0/12 src-address=10.150.150.0/24
+add action=drop chain=forward comment="FWD: Isolate IoT - block 192.168.0.0/16" dst-address=192.168.0.0/16 src-address=10.150.150.0/24
+add action=drop chain=forward comment="FWD: Isolate VoIP - block 10.0.0.0/8" dst-address=10.0.0.0/8 src-address=10.160.160.0/24
+add action=drop chain=forward comment="FWD: Isolate VoIP - block 172.16.0.0/12" dst-address=172.16.0.0/12 src-address=10.160.160.0/24
+add action=drop chain=forward comment="FWD: Isolate VoIP - block 192.168.0.0/16" dst-address=192.168.0.0/16 src-address=10.160.160.0/24
+add action=drop chain=forward comment="FWD: Block access TO VLAN180 (Backup_Net)" dst-address=10.180.180.0/24 src-address-list=!BackupNet_allow
+add action=accept chain=forward comment="FWD: Allow grupa_robocza inter-communication" dst-address-list=grupa_robocza src-address-list=grupa_robocza
+add action=accept chain=forward comment="FWD: Allow all to Internet"</pre>
+    <button class="copy" onclick="copyBlock('forti-filter')">📋 Skopiuj reguły firewalla</button>
+
+    <h2>3️⃣ Opis kluczowych bloków</h2>
+    <ul>
+      <li><b>Protect VLAN250 / VLAN1</b> – chroni sieci zarządzania i Unifi przed ruchem innych VLANów.</li>
+      <li><b>Isolate Guests / IoT / VoIP</b> – separuje strefy niskiego zaufania od sieci firmowych.</li>
+      <li><b>Block access TO VLAN180</b> – nowa reguła chroniąca Backup_Net. Blokuje wszelki ruch przychodzący do VLAN180 z wyjątkiem hostów z listy <code>BackupNet_allow</code>.</li>
+      <li><b>Allow grupa_robocza</b> – umożliwia komunikację wewnętrzną VLAN100–140,300.</li>
+      <li><b>Allow all to Internet</b> – przepuszcza ruch z dowolnego VLANu w stronę Internetu.</li>
+    </ul>
+
+    <h2>4️⃣ Lista wyjątków Backup_Net</h2>
+    <pre id="allow-list">/ip firewall address-list
+add list=BackupNet_allow address=10.100.100.10 comment="Zaufany PC Renault"
+add list=BackupNet_allow address=10.120.120.12 comment="Zaufany NAS Peugeot"</pre>
+    <button class="copy" onclick="copyBlock('allow-list')">📋 Skopiuj listę BackupNet_allow</button>
+    <p class="note">Adresy dodane do tej listy mają prawo łączyć się z VLAN180; reszta VLANów 100–170 zostaje zablokowana.</p>
+
+    <footer>Pietrzak‑VLAN © 2025 • MikroTik (Forti symulator) Firewall • Gradient fioletowo‑niebieski • Czcionka DejaVu Sans</footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Karta Wi‑Fi dla Gości – Pietrzak</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  .card {
+    width: 148mm;
+    height: 95mm;
+    margin: 14mm auto;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+  .left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 30% 30%, #f5f7ff 0%, #ffffff 70%);
+  }
+  .right {
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .logo { height: 34px; margin-bottom: 8px; }
+  h1 { font-size: 20px; margin: 6px 0 10px 0; color: #333; }
+  .label { color:#764ba2; font-weight:600; letter-spacing:.04em; font-size:12px; }
+  .value { font-size: 22px; font-weight:700; color:#1d1d1f; margin: 2px 0 10px 0; word-break: break-word; }
+  .hint { font-size: 12px; color:#555; margin-top: 8px; }
+  .qr-img { width: 260px; height: 260px; image-rendering: pixelated; }
+  @media print {
+    body { background: none; }
+    .card { box-shadow:none; }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="left">
+      <img class="qr-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXIAAAFyAQAAAADAX2ykAAAC2UlEQVR4nO2cS27cMAxAH2sBWco3yFHkG+RIRY+UG9hHmQMEkJcBZLALfcZp0gyCTgyrIBfC2H4LAgRJkaJGlK/I8uNLOBhvvPHfyq9SZGITFhEp70ZgGaF+d8foY/yd+UFVVRVWB3jVvISLCOHiIKiqajxKH+PvxzsABIaUf4WLS4KP6PKYnMAArCOE5yP0Mf6+vHv3xicIzy4JPKjg46H6GP+NvE8Am7CMoBo30Xl1f+e/Wx/j/5nP1rsWSboI6PL0Iro8KQQF8AqsR+hj/H15yr4JIMRBP1yKDKrz2fQ3/oboTiKQzfh2uYrZtz++ZliZAFVNyM+4CfiETP41F8a5HD6j/sZ/Jqpx0Lxkh/UpG7lut4BWIpv/9sbn/KuzTxDiPh2rxkFza2MGwJt9++OzrxYn1mrkbG5NlPwbKU0ss29nfNlfzTkWDwo1PudIPXtVgiazb598DcMtCRfZ+2+1udm3P775qpYyN2j5lRNzjt4VMfv2yq8iu0Ok0tUYyuMiDpkO1cf4+/C7+EyIQLYqJTHnIJ2rJ/PfDvlW/9LMmCi1EGVPXTfW1p/sjy/+23oZb7bTsP9g9u2Qb/VvrXqB6qt1z7X36bPpb/wNKabNZVDpVRXT+mt/o3Wyzqa/8Z+Lo4zmbHI9BJYQ85mw5g/LhOgiQzqf/sZ/Lm06Y0h5CCvo5hQ2B/7FlfN9hkSe1Dmb/sbfkFofsWtCX49+y+ikWv7tlC8HRqEuOf9eO5VzAy3/9sj/Ob9RyqWdtMa01Ud98tf7C15VJv8qQO1fAUie33hMx+hj/J35dn+BTfTXWGK2iIjUmN18+oz6G3+LL5eLKJ1omdqpPnn0ahO7n/Kf8Ku00TrV7M6zT8i02v2y/viP7qc4ljHCMr44BZBweVCWcThAH+Pvy7+9v7DtHkv/ykdg3aR0Os6mv/E35N39hToauzsYBmx+o09e9DazE/t/BuONPxH/G2pFaMkMivvlAAAAAElFTkSuQmCC" alt="QR Wi‑Fi"/>
+    </div>
+    <div class="right">
+      <img class="logo" src="data:image/png;base64,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" alt="Pietrzak logo"/>
+      <h1>Sieć Wi‑Fi dla gości</h1>
+      <div class="label">NAZWA SIECI (SSID)</div>
+      <div class="value">PietrzakGoscie</div>
+      <div class="label">HASŁO</div>
+      <div class="value">SalonGrupa25!</div>
+      <div class="label">ZABEZPIECZENIE</div>
+      <div class="value">WPA‑Personal</div>
+      <div class="hint">Zeskanuj kod QR po lewej, aby połączyć się automatycznie.</div>
+    </div>
+  </div>
+</body>
+</html>

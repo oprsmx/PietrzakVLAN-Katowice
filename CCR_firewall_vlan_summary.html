@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Pietrzak‑VLAN — CCR2004 Firewall (pełna dokumentacja)</title>
+<style>
+  body{font-family:'DejaVu Sans',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; margin:0; background:linear-gradient(135deg,#2b1055,#7597de); color:#fff}
+  .wrap{max-width:1200px;margin:40px auto;padding:28px;background:rgba(255,255,255,.10);border-radius:18px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+  h1{margin:0 0 10px 0;text-align:center}
+  h2{margin-top:28px;color:#ffd166;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:6px}
+  p,li{line-height:1.5}
+  .card{background:rgba(0,0,0,.55);border-radius:12px;padding:16px;margin:14px 0}
+  pre{margin:0;white-space:pre;overflow:auto;color:#00ffea}
+  .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:10px 0 4px}
+  .pill{background:rgba(255,255,255,.15);padding:6px 10px;border-radius:999px;display:inline-block;margin:4px 8px 4px 0}
+  .copy{margin-top:10px;border:0;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;background:#06d6a0;color:#000}
+  .copy:hover{background:#04b383}
+  .note{color:#aaffaa;font-style:italic}
+  footer{margin-top:24px;text-align:center;color:#cbd5e1;font-size:13px}
+</style>
+<script>
+function copyBlock(id){
+  const el=document.getElementById(id);
+  if(!el) return; const txt=el.textContent; navigator.clipboard.writeText(txt);
+}
+</script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🔥 Pietrzak‑VLAN — CCR2004 Firewall (pełna dokumentacja)</h1>
+    <div class="meta">
+      <div class="pill">Urządzenie: <b>CCR2004‑16G‑2S+</b></div>
+      <div class="pill">S/N: <b>HJT0AHP3TPV</b></div>
+      <div class="pill">RouterOS: <b>7.18.2</b></div>
+      <div class="pill">Stan: <b>23.10.2025</b></div>
+    </div>
+
+    <div class="card">
+      <h2>1) Rola CCR w architekturze</h2>
+      <ul>
+        <li><b>L2/VLAN controller</b> z <code>bridge vlan-filtering=yes</code> (tagowanie/trunki do Forti).</li>
+        <li><b>DHCP/ARP</b>: serwery DHCP (w tym NetBan FAKE), ARP <i>reply-only</i>, statyczne ARP.</li>
+        <li><b>Nie routuje</b> między VLAN-ami (bramy .1 są na Forti/małym MT), dlatego reguły <code>forward</code> na CCR
+            dotyczą głównie ochrony segmentów, ruchu w obrębie bridge oraz własnej powierzchni ataku.</li>
+      </ul>
+      <p class="note">Uwaga: inter‑VLAN L3 kontroluje Forti; CCR zachowuje polityki spójne z projektem (Guest/IoT/VoIP izolacja,
+      ochrona VLAN1/250, dopuszczenie <i>grupa_robocza</i> i wyjścia do Internetu).</p>
+    </div>
+
+    <div class="card">
+      <h2>2) Pełny eksport reguł: <code>/ip firewall filter</code> (CCR)</h2>
+      <pre id="ccr-filter"># model = CCR2004-16G-2S+
+# serial number = HJT0AHP3TPV
+/ip firewall filter
+add action=accept chain=forward comment="FWD: Allow EST/REL" connection-state=established,related
+add action=drop chain=forward comment="FWD: Drop invalid" connection-state=invalid
+add action=drop chain=forward comment="FWD: Protect Management VLAN250" dst-address=10.250.250.0/24
+add action=drop chain=forward comment="FWD: Protect UniFi VLAN1" dst-address=10.251.251.0/24
+add action=accept chain=forward comment="Allow Guest CK2 Portal" dst-address=10.251.251.10 port=8443,8880,8843 protocol=\
+    tcp src-address=10.170.170.0/24
+add action=accept chain=forward comment="Allow Guests -> UCK2 Captive Portal" dst-address=10.251.251.10 dst-port=\
+    8080,8443,8843,443 protocol=tcp src-address=10.170.170.0/24
+add action=drop chain=forward comment="FWD: Isolate Guests - block 10.x" dst-address=10.0.0.0/8 src-address=\
+    10.170.170.0/24
+add action=drop chain=forward comment="FWD: Isolate Guests - block 172.16.x" dst-address=172.16.0.0/12 src-address=\
+    10.170.170.0/24
+add action=drop chain=forward comment="FWD: Isolate Guests - block 192.168.x" dst-address=192.168.0.0/16 src-address=\
+    10.170.170.0/24
+add action=drop chain=forward comment="FWD: Isolate IoT - block 10.x" dst-address=10.0.0.0/8 src-address=10.150.150.0/24
+add action=drop chain=forward comment="FWD: Isolate IoT - block 172.16.x" dst-address=172.16.0.0/12 src-address=\
+    10.150.150.0/24
+add action=drop chain=forward comment="FWD: Isolate IoT - block 192.168.x" dst-address=192.168.0.0/16 src-address=\
+    10.150.150.0/24
+add action=drop chain=forward comment="FWD: Isolate VoIP - block 10.x" dst-address=10.0.0.0/8 src-address=10.160.160.0/24
+add action=drop chain=forward comment="FWD: Isolate VoIP - block 172.16.x" dst-address=172.16.0.0/12 src-address=\
+    10.160.160.0/24
+add action=drop chain=forward comment="FWD: Isolate VoIP - block 192.168.x" dst-address=192.168.0.0/16 src-address=\
+    10.160.160.0/24
+add action=accept chain=forward comment="FWD: Allow grupa_robocza" dst-address-list=grupa_robocza src-address-list=\
+    grupa_robocza
+add action=accept chain=forward comment="FWD: Allow to Internet"
+add action=drop chain=forward comment="FWD: Isolate IoT - block 10.x" dst-address=10.0.0.0/8 src-address=10.150.150.0/24
+add action=drop chain=forward comment="FWD: Isolate IoT - block 172.16.x" dst-address=172.16.0.0/12 src-address=\
+    10.150.150.0/24
+add action=drop chain=forward comment="FWD: Isolate IoT - block 192.168.x" dst-address=192.168.0.0/16 src-address=\
+    10.150.150.0/24</pre>
+      <button class="copy" onclick="copyBlock('ccr-filter')">📋 Skopiuj /ip firewall filter</button>
+      <p class="note">Opis:
+        <br>• <b>EST/REL</b> — stateful firewall; przepuszcza tylko ruch należący do istniejących sesji.
+        <br>• <b>Drop invalid</b> — sanity check, czyści śmieciowe stany.
+        <br>• <b>Protect VLAN250/1</b> — ochrona płaszczyzny zarządzania (VLAN250) i Unifi mgmt (VLAN1).
+        <br>• <b>Isolate Guests/IoT/VoIP</b> — minimalizacja powierzchni ataku podsieci niskiego zaufania; blokada RFC1918.
+        <br>• <b>Allow grupa_robocza</b> — pozwala VLAN100–140 + VLAN300 na wzajemną komunikację biznesową.
+        <br>• <b>Allow to Internet</b> — przepuszcza wyjście do Forti/WAN; ruch międzysieciowy L3 i tak realizuje Forti.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>3) Pełny eksport: <code>/ip firewall address-list</code> (CCR)</h2>
+      <pre id="ccr-addr">/ip firewall address-list
+add address=10.199.199.0/24 comment=VLAN199 list=BLACKHOLE
+add address=172.18.254.0/23 comment="VLAN300 Serwery" list=grupa_robocza
+add address=10.100.100.0/24 comment="VLAN100 Renault" list=grupa_robocza
+add address=10.110.110.0/24 comment="VLAN110 Ferrari" list=grupa_robocza
+add address=10.120.120.0/24 comment="VLAN120 Peugeot" list=grupa_robocza
+add address=10.130.130.0/24 comment="VLAN130 Lamborghini" list=grupa_robocza
+add address=10.140.140.0/24 comment="VLAN140 Drukarki" list=grupa_robocza
+add address=10.150.150.0/24 comment="VLAN150 IoT (izolowany)" list=iot_group</pre>
+      <button class="copy" onclick="copyBlock('ccr-addr')">📋 Skopiuj /ip firewall address-list</button>
+      <p class="note">Listy adresowe grupują podsieci do łatwego stosowania wyjątków (np. <i>grupa_robocza</i>, <i>iot_group</i>,
+        <i>BLACKHOLE</i>). Stanowią warstwę abstrakcji nad adresacją — zmiana sieci nie wymaga przerabiania wielu reguł.</p>
+    </div>
+
+    <footer>
+      Pietrzak‑VLAN © 2025 • Dokument utworzony w kolorystyce projektu (gradient fiolet‑niebieski) • Czcionka DejaVu Sans
+    </footer>
+  </div>
+</body>
+</html>
