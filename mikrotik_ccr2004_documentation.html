@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCR2004-L3-DHCP - Dokumentacja Techniczna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        .device-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .device-info-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .device-info-item strong {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+        .device-info-item span {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .content {
+            padding: 40px;
+        }
+        .toc {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .toc h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+        .toc ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .toc ul li:last-child {
+            border-bottom: none;
+        }
+        .toc ul li a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .toc ul li a:hover {
+            color: #764ba2;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .section-header h2 {
+            font-size: 1.8em;
+        }
+        .section-description {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            line-height: 1.7;
+            color: #333;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+        .info-box strong {
+            color: #2196F3;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #856404;
+            line-height: 1.6;
+        }
+        .warning-box strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #155724;
+            line-height: 1.6;
+        }
+        .success-box strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .vlan-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .vlan-prod {
+            background: #d4edda;
+            color: #155724;
+        }
+        .vlan-mgmt {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        .vlan-guest {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .vlan-iot {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .code-block code {
+            display: block;
+            white-space: pre;
+        }
+        .comment {
+            color: #6a9955;
+        }
+        .keyword {
+            color: #569cd6;
+        }
+        .string {
+            color: #ce9178;
+        }
+        .number {
+            color: #b5cea8;
+        }
+        .topology-diagram {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .topology-diagram pre {
+            font-family: monospace;
+            font-size: 0.9em;
+            line-height: 1.8;
+            color: #333;
+            display: inline-block;
+            text-align: left;
+        }
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .stat-card .label {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #dee2e6;
+        }
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .tag-trunk {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .tag-access {
+            background: #d4edda;
+            color: #155724;
+        }
+        .tag-isolated {
+            background: #f8d7da;
+            color: #842029;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔧 CCR2004-L3-DHCP</h1>
+            <p>Dokumentacja Techniczna Konfiguracji</p>
+            <div class="device-info">
+                <div class="device-info-item">
+                    <strong>Model</strong>
+                    <span>CCR2004-16G-2S+</span>
+                </div>
+                <div class="device-info-item">
+                    <strong>RouterOS</strong>
+                    <span>7.18.2</span>
+                </div>
+                <div class="device-info-item">
+                    <strong>Serial Number</strong>
+                    <span>HJT0AHP3TPV</span>
+                </div>
+                <div class="device-info-item">
+                    <strong>Data eksportu</strong>
+                    <span>2025-10-23</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h2>📋 Spis treści</h2>
+                <ul>
+                    <li><a href="#overview">1. Przegląd konfiguracji</a></li>
+                    <li><a href="#topology">2. Topologia sieci</a></li>
+                    <li><a href="#vlans">3. Konfiguracja VLAN</a></li>
+                    <li><a href="#dhcp">4. Serwery DHCP (Dual-Pool System)</a></li>
+                    <li><a href="#routing">5. Routing i adresacja IP</a></li>
+                    <li><a href="#firewall">6. Reguły Firewall</a></li>
+                    <li><a href="#bridge">7. Bridge i VLAN Filtering</a></li>
+                    <li><a href="#arp">8. Static ARP Entries</a></li>
+                    <li><a href="#scripts">9. Custom Scripts & Scheduler</a></li>
+                    <li><a href="#security">10. Zabezpieczenia i izolacja</a></li>
+                </ul>
+            </div>
+
+            <!-- Section 1: Overview -->
+            <div id="overview" class="section">
+                <div class="section-header">
+                    <h2>1️⃣ Przegląd konfiguracji</h2>
+                </div>
+                
+                <div class="section-description">
+                    Konfiguracja routera <strong>MikroTik CCR2004-16G-2S+</strong> pełniącego rolę <strong>Core L3 Switch</strong> 
+                    z funkcją serwera DHCP dla wszystkich VLANów. Urządzenie obsługuje routing międzysieciowy, 
+                    izolację segmentów oraz advanced security features z wykorzystaniem dual-pool DHCP system (produkcja + NetBan).
+                </div>
+
+                <div class="network-stats">
+                    <div class="stat-card">
+                        <div class="number">12</div>
+                        <div class="label">Skonfigurowanych VLANów</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">13</div>
+                        <div class="label">Serwerów DHCP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">15</div>
+                        <div class="label">Reguł Firewall</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">8</div>
+                        <div class="label">Static ARP Entries</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Kluczowe cechy konfiguracji:</strong>
+                    • VLAN Filtering włączony na bridge1<br>
+                    • Dual-pool DHCP (produkcja 10.x.x.x + fake NetBan 100.x.x.x)<br>
+                    • Izolacja sieci: Goscie, IoT, VoIP<br>
+                    • Static ARP dla zaufanych urządzeń<br>
+                    • Bridge filters: drop DHCP na trunk portach<br>
+                    • Custom script: drop-host-v2 (usuwanie hostów)
+                </div>
+            </div>
+
+            <!-- Section 2: Topology -->
+            <div id="topology" class="section">
+                <div class="section-header">
+                    <h2>2️⃣ Topologia sieci</h2>
+                </div>
+
+                <div class="section-description">
+                    Router CCR2004 stanowi centralne urządzenie L3 z VLAN filtering na bridge. 
+                    Uplink do Fortinet przez ether2, trunk do Aggregation Switch przez sfp-sfpplus2.
+                </div>
+
+                <div class="topology-diagram">
+                    <pre>
+                    Internet
+                        |
+                        |
+                 [Fortinet FW]
+                        |
+                   ether2 (WAN)
+                        |
+    ┌───────────────────┴───────────────────┐
+    │                                       │
+    │      MikroTik CCR2004-16G-2S+        │
+    │         (CCR2004-L3-DHCP)            │
+    │     RouterOS 7.18.2 | bridge1        │
+    │                                       │
+    └────┬──────┬──────┬──────┬───────┬────┘
+         │      │      │      │       │
+      ether4 ether5 ether6 ether7  sfp-sfpplus2 (Trunk)
+         │      │      │      │       │
+      [Access ports]               [Aggregation SW]
+      VLAN1,250 untagged               │
+                                       │
+                              All VLANs tagged:
+                              100,110,120,130,140
+                              150,160,170,180,300
+                    </pre>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Uwagi dotyczące topologii:</strong>
+                    • ether2 = Uplink do Fortinet (WAN, no management access)<br>
+                    • sfp-sfpplus2 = Trunk do Aggregation (wszystkie VLANy tagged)<br>
+                    • ether1 = Tagged VLANy produkcyjne<br>
+                    • ether4-7 = Access porty z VLAN1 i VLAN250 untagged
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Interface</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                            <th>VLANy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ether2</strong></td>
+                            <td><span class="tag tag-trunk">UPLINK</span></td>
+                            <td>Uplink_to_Forti (WAN)</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>sfp-sfpplus2</strong></td>
+                            <td><span class="tag tag-trunk">TRUNK</span></td>
+                            <td>Trunk_to_Aggregation</td>
+                            <td>1,100,110,120,130,140,150,160,170,180,250,300</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ether1</strong></td>
+                            <td><span class="tag tag-trunk">TRUNK</span></td>
+                            <td>Tagged VLANs</td>
+                            <td>100,110,120,130,140,150,160,170,180,300</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ether4-7</strong></td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>Access ports</td>
+                            <td>1,250 (untagged)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section 3: VLANs -->
+            <div id="vlans" class="section">
+                <div class="section-header">
+                    <h2>3️⃣ Konfiguracja VLAN</h2>
+                </div>
+
+                <div class="section-description">
+                    Środowisko wykorzystuje <strong>12 VLANów</strong> podzielonych na kategorie: management, produkcyjne, 
+                    izolowane oraz specjalne (blackhole). Wszystkie VLANy są interfejsami typu SVI (Switched Virtual Interface) 
+                    na bridge1.
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VLAN ID</th>
+                            <th>Nazwa</th>
+                            <th>Kategoria</th>
+                            <th>Sieć IP</th>
+                            <th>Gateway</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1</strong></td>
+                            <td>vlan1_UniFi_Mgmt</td>
+                            <td><span class="vlan-badge vlan-mgmt">Management</span></td>
+                            <td>10.251.251.0/24</td>
+                            <td>10.251.251.254</td>
+                            <td>Zarządzanie UniFi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>100</strong></td>
+                            <td>vlan100_Renault</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>10.100.100.0/24</td>
+                            <td>10.100.100.254</td>
+                            <td>Sieć Renault</td>
+                        </tr>
+                        <tr>
+                            <td><strong>110</strong></td>
+                            <td>vlan110_Ferrari</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>10.110.110.0/24</td>
+                            <td>10.110.110.254</td>
+                            <td>Sieć Ferrari</td>
+                        </tr>
+                        <tr>
+                            <td><strong>120</strong></td>
+                            <td>vlan120_Peugeot</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>10.120.120.0/24</td>
+                            <td>10.120.120.254</td>
+                            <td>Sieć Peugeot</td>
+                        </tr>
+                        <tr>
+                            <td><strong>130</strong></td>
+                            <td>vlan130_Lamborghini</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>10.130.130.0/24</td>
+                            <td>10.130.130.254</td>
+                            <td>Sieć Lamborghini</td>
+                        </tr>
+                        <tr>
+                            <td><strong>140</strong></td>
+                            <td>vlan140_Drukarki</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>10.140.140.0/24</td>
+                            <td>10.140.140.254</td>
+                            <td>Drukarki</td>
+                        </tr>
+                        <tr>
+                            <td><strong>150</strong></td>
+                            <td>vlan150_IoT</td>
+                            <td><span class="vlan-badge vlan-iot">Izolowany</span></td>
+                            <td>10.150.150.0/24</td>
+                            <td>10.150.150.254</td>
+                            <td>Urządzenia IoT (izolowane)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>160</strong></td>
+                            <td>vlan160_VoIP</td>
+                            <td><span class="vlan-badge vlan-iot">Izolowany</span></td>
+                            <td>10.160.160.0/24</td>
+                            <td>10.160.160.254</td>
+                            <td>VoIP (izolowany)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>170</strong></td>
+                            <td>vlan170_Goscie</td>
+                            <td><span class="vlan-badge vlan-guest">Guest</span></td>
+                            <td>10.170.170.0/24</td>
+                            <td>10.170.170.254</td>
+                            <td>Goście (Captive Portal)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>180</strong></td>
+                            <td>vlan180_Backup_Net</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>10.180.180.0/24</td>
+                            <td>10.180.180.254</td>
+                            <td>Backup Network</td>
+                        </tr>
+                        <tr>
+                            <td><strong>199</strong></td>
+                            <td>vlan199_Blackhole</td>
+                            <td><span class="vlan-badge vlan-iot">Blackhole</span></td>
+                            <td>10.199.199.0/24</td>
+                            <td>10.199.199.1</td>
+                            <td>Blackhole (kwarantanna)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>250</strong></td>
+                            <td>vlan250</td>
+                            <td><span class="vlan-badge vlan-mgmt">Management</span></td>
+                            <td>10.250.250.0/24</td>
+                            <td>10.250.250.254</td>
+                            <td>Management (nie używany)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>300</strong></td>
+                            <td>vlan300_Serwery</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>172.18.254.0/23</td>
+                            <td>172.18.255.254</td>
+                            <td>Sieć serwerowa</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>ℹ️ Kluczowe informacje o VLANach:</strong>
+                    • Wszystkie interfejsy VLAN mają włączone ARP reply-only (oprócz VLAN1, 170, 199, 250)<br>
+                    • VLAN Filtering jest aktywny na bridge1<br>
+                    • VLANy produkcyjne należą do address-list "grupa_robocza"<br>
+                    • VLAN150 (IoT) znajduje się w osobnej address-list "iot_group"
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># Przykładowa konfiguracja VLAN interface</span>
+/interface vlan
+add <span class="keyword">arp=</span><span class="string">reply-only</span> <span class="keyword">comment=</span><span class="string">Ferrari</span> <span class="keyword">interface=</span>bridge1 \
+    <span class="keyword">name=</span>vlan110_Ferrari <span class="keyword">vlan-id=</span><span class="number">110</span></code>
+                </div>
+            </div>
+
+            <!-- Section 4: DHCP -->
+            <div id="dhcp" class="section">
+                <div class="section-header">
+                    <h2>4️⃣ Serwery DHCP - Dual-Pool System</h2>
+                </div>
+
+                <div class="section-description">
+                    Konfiguracja wykorzystuje <strong>innowacyjny dual-pool system</strong>: każdy VLAN produkcyjny posiada 
+                    dwie pule DHCP - <strong>produkcyjną</strong> (10.x.x.x) oraz <strong>NetBan fake pool</strong> (100.x.x.x). 
+                    System ten umożliwia elastyczne zarządzanie dostępem oraz izolację problemowych urządzeń.
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Jak działa Dual-Pool System?</strong>
+                    Każde urządzenie może otrzymać IP z dwóch różnych pul:<br>
+                    • <strong>Produkcyjna pula (10.x.x.x)</strong> - normalna praca, pełny dostęp<br>
+                    • <strong>NetBan pula (100.x.x.x)</strong> - ograniczony dostęp, fake gateway<br>
+                    <br>
+                    Dzięki DHCP leases można dynamicznie przełączać urządzenia między pulami bez zmiany VLAN.
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VLAN</th>
+                            <th>DHCP Server</th>
+                            <th>Pula Produkcyjna</th>
+                            <th>Pula NetBan (Fake)</th>
+                            <th>Lease Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>VLAN1</strong></td>
+                            <td>dhcp_VLAN1_UniFi_Mgmt</td>
+                            <td>10.251.251.50-253</td>
+                            <td>-</td>
+                            <td>1h</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN100</strong></td>
+                            <td>dhcp_VLAN100_NetBan</td>
+                            <td>10.100.100.50-200</td>
+                            <td>100.100.100.100-150</td>
+                            <td>10m (default)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN110</strong></td>
+                            <td>dhcp_VLAN110_NetBan</td>
+                            <td>10.110.110.50-200</td>
+                            <td>100.110.110.100-150</td>
+                            <td>1h</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN120</strong></td>
+                            <td>dhcp_VLAN120_NetBan</td>
+                            <td>10.120.120.50-200</td>
+                            <td>100.120.120.100-150</td>
+                            <td>10m (default)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN130</strong></td>
+                            <td>dhcp_VLAN130_NetBan</td>
+                            <td>10.130.130.50-200</td>
+                            <td>100.130.130.100-150</td>
+                            <td>10m (default)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN140</strong></td>
+                            <td>dhcp_VLAN140_NetBan</td>
+                            <td>10.140.140.50-200</td>
+                            <td>100.140.140.100-150</td>
+                            <td>10m (default)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN150</strong></td>
+                            <td>dhcp_VLAN150_NetBan</td>
+                            <td>10.150.150.50-200</td>
+                            <td>100.150.150.100-150</td>
+                            <td>10m (default)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN160</strong></td>
+                            <td>dhcp_VLAN160_NetBan</td>
+                            <td>-</td>
+                            <td>100.160.160.10-250</td>
+                            <td>10m (default)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN170</strong></td>
+                            <td>dhcp_VLAN170_Goscie</td>
+                            <td>10.170.170.10-250</td>
+                            <td>-</td>
+                            <td>4h</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN180</strong></td>
+                            <td>dhcp_VLAN180_NetBan</td>
+                            <td>-</td>
+                            <td>100.180.180.10-250</td>
+                            <td>10m</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN199</strong></td>
+                            <td>dhcp_vlan199_Blackhole</td>
+                            <td>-</td>
+                            <td>Blackhole pool</td>
+                            <td>12h</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN250</strong></td>
+                            <td>dhcp_mgmt250</td>
+                            <td>10.250.250.100-120</td>
+                            <td>-</td>
+                            <td>1h</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN300</strong></td>
+                            <td>dhcp_VLAN300_NetBan</td>
+                            <td>172.18.254.2-255.253</td>
+                            <td>100.18.254.100-255.150</td>
+                            <td>10m (default)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <strong>✅ Static DHCP Leases - Zaufane urządzenia:</strong>
+                    Wybrane urządzenia posiadają statyczne rezerwacje DHCP w puli produkcyjnej:<br>
+                    • 10.110.110.22 - darek-lapXY (D8:3A:DD:ED:7F:1B)<br>
+                    • 10.140.140.22 - darekWiFi (A4:C3:F0:A3:DC:66)<br>
+                    • 10.110.110.12 - wifiRPI (D8:3A:DD:ED:7F:1C)<br>
+                    • 10.180.180.22 - test-kopia (34:29:8F:74:EC:46)
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># Przykład konfiguracji dual-pool DHCP dla VLAN110</span>
+/ip pool
+add <span class="keyword">name=</span>pool_prod_110 \
+    <span class="keyword">ranges=</span><span class="string">10.110.110.50-10.110.110.100,10.110.110.102-10.110.110.200</span>
+add <span class="keyword">name=</span>pool_NetBan_110 <span class="keyword">ranges=</span><span class="string">100.110.110.100-100.110.110.150</span>
+
+/ip dhcp-server
+add <span class="keyword">address-pool=</span>pool_NetBan_110 <span class="keyword">interface=</span>vlan110_Ferrari \
+    <span class="keyword">lease-time=</span><span class="number">1h</span> <span class="keyword">name=</span>dhcp_VLAN110_NetBan
+
+/ip dhcp-server network
+add <span class="keyword">address=</span><span class="string">10.110.110.0/24</span> <span class="keyword">comment=</span><span class="string">"vlan110-Ferrari PRODUKCJA"</span> \
+    <span class="keyword">dns-server=</span><span class="string">1.1.1.1,8.8.8.8</span> <span class="keyword">gateway=</span><span class="string">10.110.110.1</span>
+add <span class="keyword">address=</span><span class="string">100.110.110.0/24</span> <span class="keyword">comment=</span><span class="string">"Fake pool - real gateway"</span> \
+    <span class="keyword">dns-server=</span><span class="string">1.1.1.1,8.8.8.8</span> <span class="keyword">gateway=</span><span class="string">10.110.110.1</span></code>
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Auto-cleanup dla VLAN170 (Goscie):</strong>
+                    Scheduler automatycznie usuwa nieaktywne leases gości co 6 godzin:<br>
+                    • Usuwa leases ze statusem "waiting" które nie były widziane przez >24h<br>
+                    • Zapobiega wyczerpaniu puli DHCP dla gości<br>
+                    • Start: 2025-10-22 05:24:33, interwał: 6h
+                </div>
+            </div>
+
+            <!-- Section 5: Routing -->
+            <div id="routing" class="section">
+                <div class="section-header">
+                    <h2>5️⃣ Routing i adresacja IP</h2>
+                </div>
+
+                <div class="section-description">
+                    Router CCR2004 pełni rolę <strong>default gateway</strong> dla wszystkich VLANów. 
+                    Ruch wychodzący jest kierowany przez małego MT (10.251.251.1) który symuluje Fortinet Firewall.
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Interface VLAN</th>
+                            <th>Adres IP CCR2004</th>
+                            <th>Sieć</th>
+                            <th>Gateway dla klientów</th>
+                            <th>Maska</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>vlan1_UniFi_Mgmt</td>
+                            <td>10.251.251.254</td>
+                            <td>10.251.251.0</td>
+                            <td>10.251.251.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan100_Renault</td>
+                            <td>10.100.100.254<br>100.100.100.254</td>
+                            <td>10.100.100.0</td>
+                            <td>10.100.100.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan110_Ferrari</td>
+                            <td>10.110.110.254</td>
+                            <td>10.110.110.0</td>
+                            <td>10.110.110.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan120_Peugeot</td>
+                            <td>10.120.120.254</td>
+                            <td>10.120.120.0</td>
+                            <td>10.120.120.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan130_Lamborghini</td>
+                            <td>10.130.130.254</td>
+                            <td>10.130.130.0</td>
+                            <td>10.130.130.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan140_Drukarki</td>
+                            <td>10.140.140.254</td>
+                            <td>10.140.140.0</td>
+                            <td>10.140.140.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan150_IoT</td>
+                            <td>10.150.150.254</td>
+                            <td>10.150.150.0</td>
+                            <td>10.150.150.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan160_VoIP</td>
+                            <td>10.160.160.254</td>
+                            <td>10.160.160.0</td>
+                            <td>10.160.160.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan170_Goscie</td>
+                            <td>10.170.170.254</td>
+                            <td>10.170.170.0</td>
+                            <td>10.170.170.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan180_Backup_Net</td>
+                            <td>10.180.180.254</td>
+                            <td>10.180.180.0</td>
+                            <td>10.180.180.1 (MT)</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan199_Blackhole</td>
+                            <td>10.199.199.1</td>
+                            <td>10.199.199.0</td>
+                            <td>10.199.199.1</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan250</td>
+                            <td>10.250.250.254</td>
+                            <td>10.250.250.0</td>
+                            <td>10.250.250.1</td>
+                            <td>/24</td>
+                        </tr>
+                        <tr>
+                            <td>vlan300_Serwery</td>
+                            <td>172.18.255.254</td>
+                            <td>172.18.254.0</td>
+                            <td>172.18.254.1 (MT)</td>
+                            <td>/23</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>ℹ️ Default Route:</strong>
+                    Dwie identyczne trasy domyślne przez mały MT (symulacja redundancji):<br>
+                    <code>0.0.0.0/0 → 10.251.251.1</code>
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># Routing Configuration</span>
+/ip route
+add <span class="keyword">comment=</span><span class="string">"Default route to may MT (Forti)"</span> \
+    <span class="keyword">dst-address=</span><span class="string">0.0.0.0/0</span> <span class="keyword">gateway=</span><span class="string">10.251.251.1</span></code>
+                </div>
+            </div>
+
+            <!-- Section 6: Firewall -->
+            <div id="firewall" class="section">
+                <div class="section-header">
+                    <h2>6️⃣ Reguły Firewall</h2>
+                </div>
+
+                <div class="section-description">
+                    Firewall implementuje <strong>defense-in-depth strategy</strong> z izolacją segmentów sieciowych. 
+                    Specjalne reguły chronią sieci management, izolują gości i IoT oraz kontrolują dostęp do Backup_Net.
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Kolejność reguł jest krytyczna!</strong>
+                    Reguły są przetwarzane od góry do dołu. Pierwsze dopasowanie kończy przetwarzanie (accept/drop).
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔒 Address Lists</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lista</th>
+                            <th>Sieci</th>
+                            <th>Zastosowanie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>grupa_robocza</strong></td>
+                            <td>VLAN100,110,120,130,140,300</td>
+                            <td>Sieci produkcyjne z wzajemną komunikacją</td>
+                        </tr>
+                        <tr>
+                            <td><strong>iot_group</strong></td>
+                            <td>VLAN150 (10.150.150.0/24)</td>
+                            <td>Urządzenia IoT - izolowane</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BLACKHOLE</strong></td>
+                            <td>VLAN199 (10.199.199.0/24)</td>
+                            <td>Kwarantanna dla problemowych hostów</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BackupNet_allow</strong></td>
+                            <td>(nie zdefiniowana)</td>
+                            <td>Dozwolony dostęp do VLAN180</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🛡️ Forward Chain Rules</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Action</th>
+                            <th>Opis</th>
+                            <th>Source/Destination</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow EST/REL connections</td>
+                            <td>connection-state=established,related</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Drop invalid packets</td>
+                            <td>connection-state=invalid</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Protect Management VLAN250</td>
+                            <td>dst-address=10.250.250.0/24</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Protect UniFi VLAN1</td>
+                            <td>dst-address=10.251.251.0/24</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow Guest → CK2 Captive Portal</td>
+                            <td>src=10.170.170.0/24 → dst=10.251.251.10:8443,8880,8843</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow Guests → UCK2 Portal (HTTP/HTTPS)</td>
+                            <td>src=10.170.170.0/24 → dst=10.251.251.10:8080,8443,443</td>
+                        </tr>
+                        <tr>
+                            <td>7-9</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Isolate Guests - block RFC1918</td>
+                            <td>src=10.170.170.0/24 → dst=10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16</td>
+                        </tr>
+                        <tr>
+                            <td>10-12</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Isolate IoT - block RFC1918</td>
+                            <td>src=10.150.150.0/24 → dst=10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16</td>
+                        </tr>
+                        <tr>
+                            <td>13-15</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Isolate VoIP - block RFC1918</td>
+                            <td>src=10.160.160.0/24 → dst=10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>Block access TO Backup_Net</td>
+                            <td>dst=10.180.180.0/24, src-address-list≠BackupNet_allow</td>
+                        </tr>
+                        <tr>
+                            <td>17</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow grupa_robocza inter-communication</td>
+                            <td>src-list=grupa_robocza → dst-list=grupa_robocza</td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+                            <td><span class="tag tag-access">ACCEPT</span></td>
+                            <td>Allow all to Internet</td>
+                            <td>(catch-all rule)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <strong>✅ Kluczowe funkcje bezpieczeństwa:</strong>
+                    • Stateful firewall (established/related tracking)<br>
+                    • Management VLANs (1, 250) całkowicie chronione<br>
+                    • Goście (VLAN170) - dostęp tylko do Internetu + Captive Portal<br>
+                    • IoT (VLAN150) - całkowicie izolowane od sieci wewnętrznych<br>
+                    • VoIP (VLAN160) - izolowany segment<br>
+                    • Backup_Net (VLAN180) - dostęp tylko dla address-list "BackupNet_allow"
+                </div>
+
+                <div class="code-block">
+                    <code><span class="comment"># Przykład izolacji IoT</span>
+/ip firewall filter
+add <span class="keyword">action=</span>drop <span class="keyword">chain=</span>forward \
+    <span class="keyword">comment=</span><span class="string">"FWD: Isolate IoT - block 10.x"</span> \
+    <span class="keyword">dst-address=</span><span class="string">10.0.0.0/8</span> <span class="keyword">src-address=</span><span class="string">10.150.150.0/24</span>
+add <span class="keyword">action=</span>drop <span class="keyword">chain=</span>forward \
+    <span class="keyword">comment=</span><span class="string">"FWD: Isolate IoT - block 172.16.x"</span> \
+    <span class="keyword">dst-address=</span><span class="string">172.16.0.0/12</span> <span class="keyword">src-address=</span><span class="string">10.150.150.0/24</span>
+add <span class="keyword">action=</span>drop <span class="keyword">chain=</span>forward \
+    <span class="keyword">comment=</span><span class="string">"FWD: Isolate IoT - block 192.168.x"</span> \
+    <span class="keyword">dst-address=</span><span class="string">192.168.0.0/16</span> <span class="keyword">src-address=</span><span class="string">10.150.150.0/24</span></code>
+                </div>
+            </div>
+
+            <!-- Section 7: Bridge -->
+            <div id="bridge" class="section">
+                <div class="section-header">
+                    <h2>7️⃣ Bridge i VLAN Filtering</h2>
+                </div>
+
+                <div class="section-description">
+                    Bridge1 jest głównym switched infrastructure z <strong>VLAN filtering enabled</strong>. 
+                    Implementuje advanced L2 security features including DHCP snooping na trunk portach.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔌 Bridge Port Membership</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Port</th>
+                            <th>Bridge</th>
+                            <th>Typ</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ether1</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-trunk">TRUNK</span></td>
+                            <td>Tagged VLANs 100-300</td>
+                        </tr>
+                        <tr>
+                            <td>ether4</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>VLAN1, 250 untagged</td>
+                        </tr>
+                        <tr>
+                            <td>ether5</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>VLAN1, 250 untagged</td>
+                        </tr>
+                        <tr>
+                            <td>ether6</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>VLAN1, 250 untagged</td>
+                        </tr>
+                        <tr>
+                            <td>ether7</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-access">ACCESS</span></td>
+                            <td>VLAN250 untagged</td>
+                        </tr>
+                        <tr>
+                            <td>sfp-sfpplus2</td>
+                            <td>bridge1</td>
+                            <td><span class="tag tag-trunk">TRUNK</span></td>
+                            <td>All VLANs tagged (Aggregation link)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🏷️ VLAN Membership na Bridge</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VLAN ID</th>
+                            <th>Tagged Ports</th>
+                            <th>Untagged Ports</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1</strong></td>
+                            <td>sfp-sfpplus2</td>
+                            <td>ether4, ether5, ether6</td>
+                        </tr>
+                        <tr>
+                            <td><strong>100</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>110</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>120</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>130</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>140</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>150</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>160</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>170</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>180</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>250</strong></td>
+                            <td>sfp-sfpplus2</td>
+                            <td>ether4, ether5, ether6, ether7</td>
+                        </tr>
+                        <tr>
+                            <td><strong>300</strong></td>
+                            <td>ether1, sfp-sfpplus2</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🛡️ Bridge Filters (L2 Security)</h3>
+                <div class="warning-box">
+                    <strong>⚠️ DHCP Snooping na trunk!</strong>
+                    Bridge filters blokują DHCP packets na sfp-sfpplus2 trunk aby zapobiec DHCP spoofing:
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Chain</th>
+                            <th>Opis</th>
+                            <th>Parametry</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>forward</td>
+                            <td>Drop DHCP server from trunk</td>
+                            <td>in-interface=sfp-sfpplus2, src-port=67, dst-port=68, UDP</td>
+                        </tr>
+                        <tr>
+                            <td><span class="tag tag-isolated">DROP</span></td>
+                            <td>forward</td>
+                            <td>Drop DHCP client to trunk</td>
+                            <td>in-interface=sfp-sfpplus2, src-port=68, dst-port=67, UDP</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="code-block">
+                    <code><span class="comment"># Bridge Configuration</span>
+/interface bridge
+add <span class="keyword">arp=</span><span class="string">reply-only</span> <span class="keyword">name=</span>bridge1 <span class="keyword">vlan-filtering=</span><span class="string">yes</span>
+
+<span class="comment"># Bridge Filters - DHCP Snooping</span>
+/interface bridge filter
+add <span class="keyword">action=</span>drop <span class="keyword">chain=</span>forward \
+    <span class="keyword">comment=</span><span class="string">"Drop DHCP server from trunk"</span> \
+    <span class="keyword">dst-port=</span><span class="number">68</span> <span class="keyword">in-interface=</span>sfp-sfpplus2 \
+    <span class="keyword">ip-protocol=</span>udp <span class="keyword">mac-protocol=</span>ip <span class="keyword">src-port=</span><span class="number">67</span></code>
+                </div>
+            </div>
+
+            <!-- Section 8: ARP -->
+            <div id="arp" class="section">
+                <div class="section-header">
+                    <h2>8️⃣ Static ARP Entries</h2>
+                </div>
+
+                <div class="section-description">
+                    Static ARP entries zapewniają <strong>predictable routing</strong> dla kluczowych urządzeń 
+                    oraz chronią przed ARP spoofing attacks.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔐 Trusted Gateways (Mały MT)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>MAC Address</th>
+                            <th>Interface</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>10.251.251.1</strong></td>
+                            <td>D4:01:C3:28:AF:14</td>
+                            <td>vlan1_UniFi_Mgmt</td>
+                            <td>Gateway UniFi Management</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.100.100.1</strong></td>
+                            <td>D4:01:C3:28:AF:15</td>
+                            <td>vlan100_Renault</td>
+                            <td>Mały MT - Brama VLAN100 (TRUSTED)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.110.110.1</strong></td>
+                            <td>D4:01:C3:28:AF:17</td>
+                            <td>vlan110_Ferrari</td>
+                            <td>Mały MT - Brama VLAN110 (TRUSTED)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.120.120.1</strong></td>
+                            <td>D4:01:C3:28:AF:17</td>
+                            <td>vlan120_Peugeot</td>
+                            <td>Mały MT - Brama VLAN120 (poprawiony MAC)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.130.130.1</strong></td>
+                            <td>D4:01:C3:28:AF:17</td>
+                            <td>vlan130_Lamborghini</td>
+                            <td>Mały MT - Brama VLAN130 (TRUSTED)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.140.140.1</strong></td>
+                            <td>D4:01:C3:28:AF:15</td>
+                            <td>vlan140_Drukarki</td>
+                            <td>Mały MT - Brama VLAN140 (TRUSTED)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.150.150.1</strong></td>
+                            <td>D4:01:C3:28:AF:15</td>
+                            <td>vlan150_IoT</td>
+                            <td>Mały MT - Brama VLAN150 IoT (TRUSTED)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>172.18.254.1</strong></td>
+                            <td>D4:01:C3:28:AF:15</td>
+                            <td>vlan300_Serwery</td>
+                            <td>GW VLAN300 Mały MT (Forti-symulacja)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.160.160.1</strong></td>
+                            <td>D4:01:C3:28:AF:15</td>
+                            <td>vlan160_VoIP</td>
+                            <td>Trusted GW VLAN160 (Mały MT)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.170.170.1</strong></td>
+                            <td>D4:01:C3:28:AF:15</td>
+                            <td>vlan170_Goscie</td>
+                            <td>Trusted GW VLAN170 (Mały MT)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.180.180.1</strong></td>
+                            <td>D4:01:C3:28:AF:15</td>
+                            <td>vlan180_Backup_Net</td>
+                            <td>GW VLAN180 smallMT</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">👤 Trusted End Devices</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>MAC Address</th>
+                            <th>Interface</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>10.110.110.22</strong></td>
+                            <td>D8:3A:DD:ED:7F:1B</td>
+                            <td>vlan110_Ferrari</td>
+                            <td>darek-lapXY (TRUSTED)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.140.140.22</strong></td>
+                            <td>A4:C3:F0:A3:DC:66</td>
+                            <td>vlan140_Drukarki</td>
+                            <td>darekWiFi (TRUSTED)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.110.110.12</strong></td>
+                            <td>D8:3A:DD:ED:7F:1C</td>
+                            <td>vlan110_Ferrari</td>
+                            <td>wifiRPI (TRUSTED)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10.180.180.22</strong></td>
+                            <td>34:29:8F:74:EC:46</td>
+                            <td>vlan180_Backup_Net</td>
+                            <td>test-kopia (TRUSTED)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>ℹ️ Dlaczego Static ARP?</strong>
+                    • Zapobiega ARP spoofing/poisoning attacks<br>
+                    • Gwarantuje, że gateway traffic zawsze idzie do właściwego urządzenia<br>
+                    • Eliminuje ARP storms w dużych sieciach<br>
+                    • Trusted devices mają gwarantowany dostęp
+                </div>
+            </div>
+
+            <!-- Section 9: Scripts -->
+            <div id="scripts" class="section">
+                <div class="section-header">
+                    <h2>9️⃣ Custom Scripts & Scheduler</h2>
+                </div>
+
+                <div class="section-description">
+                    Konfiguracja zawiera advanced automation scripts do zarządzania hostem oraz 
+                    automatyczne czyszczenie DHCP leases dla gości.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🕒 Scheduler Jobs</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nazwa</th>
+                            <th>Interwał</th>
+                            <th>Start</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>cleanup_guest_leases</strong></td>
+                            <td>6 godzin</td>
+                            <td>2025-10-22 05:24:33</td>
+                            <td>Automatyczne czyszczenie nieaktywnych leases VLAN170</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="code-block">
+                    <code><span class="comment"># Scheduler: Auto cleanup VLAN170 guest leases</span>
+/system scheduler
+add <span class="keyword">comment=</span><span class="string">"Auto cleanup VLAN170 guest leases"</span> \
+    <span class="keyword">interval=</span><span class="number">6h</span> <span class="keyword">name=</span>cleanup_guest_leases \
+    <span class="keyword">on-event=</span><span class="string">"/ip dhcp-server lease remove [find \
+        server=dhcp_VLAN170_Goscie and \
+        status=waiting and \
+        last-seen>24h]"</span> \
+    <span class="keyword">start-date=</span><span class="string">2025-10-22</span> <span class="keyword">start-time=</span><span class="string">05:24:33</span></code>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">📜 Custom Script: drop-host-v2</h3>
+                <div class="warning-box">
+                    <strong>⚠️ Advanced Host Management Script</strong>
+                    Script <code>drop-host-v2</code> służy do całkowitego usunięcia hosta z sieci. 
+                    Usuwa ARP, DHCP lease, bridge host entries, conntrack sessions oraz dodaje L2 block.
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Użycie drop-host-v2:</strong>
+                    <code>:global HOSTID "34:29:8F:74:EC:46"</code><br>
+                    <code>/system script run drop-host-v2</code><br>
+                    <br>
+                    Script wykonuje następujące operacje:<br>
+                    • A) Usuwa wpisy ARP (po IP i MAC)<br>
+                    • B) Usuwa DHCP leases<br>
+                    • C) Usuwa wpisy bridge host (L2 table)<br>
+                    • D) Czyści conntrack sessions (NAT table)<br>
+                    • E) Dodaje twardą blokadę L2 w bridge filter (drop by MAC)
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Przypadki użycia:</strong>
+                    • Natychmiastowe odcięcie problematycznego urządzenia<br>
+                    • Wymuszenie ponownego uzyskania IP (refresh DHCP)<br>
+                    • Security incident response (kompromitacja hosta)<br>
+                    • Testing network connectivity issues
+                </div>
+            </div>
+
+            <!-- Section 10: Security -->
+            <div id="security" class="section">
+                <div class="section-header">
+                    <h2>🔟 Zabezpieczenia i izolacja</h2>
+                </div>
+
+                <div class="section-description">
+                    Sieć implementuje <strong>multi-layered security approach</strong> z segregacją na poziomie L2 i L3.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔒 Security Features Summary</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Warstwa</th>
+                            <th>Mechanizm</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>L2</strong></td>
+                            <td>VLAN Filtering</td>
+                            <td>Hardware-based VLAN separation na bridge</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L2</strong></td>
+                            <td>Bridge Filters</td>
+                            <td>DHCP snooping na trunk (drop rogue DHCP)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L2</strong></td>
+                            <td>ARP reply-only</td>
+                            <td>Zapobiega ARP storms i broadcast pollution</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>Stateful Firewall</td>
+                            <td>Connection tracking (est/rel/invalid)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>Network Isolation</td>
+                            <td>Guests, IoT, VoIP całkowicie izolowane</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>Management Protection</td>
+                            <td>VLAN1 i VLAN250 chronione (drop all incoming)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>Address Lists</td>
+                            <td>Grupowanie sieci dla selective access control</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>Static ARP</td>
+                            <td>Trusted gateways, zapobiega ARP spoofing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Application</strong></td>
+                            <td>Dual-Pool DHCP</td>
+                            <td>Dynamiczne przełączanie między produkcją a NetBan</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Application</strong></td>
+                            <td>Blackhole VLAN199</td>
+                            <td>Kwarantanna dla problemowych hostów</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🚨 Security Matrix</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Segment</th>
+                            <th>Internet</th>
+                            <th>Grupa Robocza</th>
+                            <th>Management</th>
+                            <th>Guests/IoT/VoIP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>VLAN1 (Mgmt)</strong></td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN100-140 (Prod)</strong></td>
+                            <td>✅ Tak</td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN150 (IoT)</strong></td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                            <td>❌ Nie</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN160 (VoIP)</strong></td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                            <td>❌ Nie</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN170 (Guests)</strong></td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                            <td>⚠️ Only Portal</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN180 (Backup)</strong></td>
+                            <td>✅ Tak</td>
+                            <td>⚠️ Whitelist</td>
+                            <td>❌ Nie</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN250 (Mgmt)</strong></td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLAN300 (Servers)</strong></td>
+                            <td>✅ Tak</td>
+                            <td>✅ Tak</td>
+                            <td>❌ Nie</td>
+                            <td>❌ Nie</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>⚠️ Rekomendacje bezpieczeństwa:</strong>
+                    • Regularnie review firewall logs dla suspicious activity<br>
+                    • Monitor DHCP leases dla rogue devices<br>
+                    • Backup konfiguracji przed zmianami<br>
+                    • Test firewall rules po każdej modyfikacji<br>
+                    • Dokumentuj wszystkie zmiany w production environment<br>
+                    • Rozważ implementację IDS/IPS na poziomie Fortinet
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Best Practices implemented:</strong>
+                    • Defense in depth (multi-layer security)<br>
+                    • Least privilege principle (minimal access required)<br>
+                    • Network segmentation (isolated VLANs)<br>
+                    • Stateful inspection (connection tracking)<br>
+                    • Management network isolation<br>
+                    • Guest network isolation z Captive Portal<br>
+                    • Automated maintenance (scheduler dla cleanup)
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Dokumentacja wygenerowana:</strong> 2025-10-23</p>
+            <p><strong>Źródło:</strong> ccr-all-23102025.rsc</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                <strong>PietrzakVLAN-Katowice</strong> | Network Management & Documentation
+            </p>
+            <p style="font-size: 0.85em; color: #999; margin-top: 10px;">
+                © 2025 | Katowice, Śląsk | RouterOS 7.18.2
+            </p>
+        </div>
+    </div>
+</body>
+</html>
