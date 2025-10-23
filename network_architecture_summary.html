@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architektura Sieci - Podsumowanie Funkcjonalne</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .section-header h2 {
+            font-size: 1.8em;
+        }
+        .section-description {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            line-height: 1.7;
+            color: #333;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+        .info-box strong {
+            color: #2196F3;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #856404;
+            line-height: 1.6;
+        }
+        .warning-box strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #155724;
+            line-height: 1.6;
+        }
+        .success-box strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .topology-diagram {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .topology-diagram pre {
+            font-family: monospace;
+            font-size: 0.85em;
+            line-height: 1.8;
+            color: #333;
+            display: inline-block;
+            text-align: left;
+        }
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .tag-core {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .tag-edge {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .tag-access {
+            background: #d4edda;
+            color: #155724;
+        }
+        .tag-isolated {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .vlan-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .vlan-prod {
+            background: #d4edda;
+            color: #155724;
+        }
+        .vlan-mgmt {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        .vlan-guest {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .vlan-iot {
+            background: #f8d7da;
+            color: #842029;
+        }
+        .cabinet-box {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .cabinet-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .cabinet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .flow-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+        }
+        .flow-step::after {
+            content: '↓';
+            display: block;
+            font-size: 2em;
+            margin-top: 10px;
+            color: white;
+        }
+        .flow-step:last-child::after {
+            display: none;
+        }
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 25px 0;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏢 Architektura Sieci Multi-Site</h1>
+            <p>Podsumowanie funkcjonalne dla wdrożenia i zarządzania</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Section 1: Overview -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>1️⃣ Przegląd architektury</h2>
+                </div>
+                
+                <div class="section-description">
+                    Infrastruktura sieciowa oparta na <strong>4 szafach telekomunikacyjnych</strong> połączonych 
+                    w topologii <strong>gwiazdy</strong> z centralną szafą Renault. Architektura wykorzystuje 
+                    <strong>segmentację VLAN</strong> (12 sieci) z zaawansowaną kontrolą dostępu i izolacją.
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Kluczowe cechy infrastruktury:</strong>
+                    • <strong>Centralizacja:</strong> Szafa Renault zawiera urządzenia core (Fortinet, CCR2004, USW Aggregation)<br>
+                    • <strong>Segmentacja:</strong> 12 VLANów z różnymi poziomami bezpieczeństwa i izolacji<br>
+                    • <strong>Redundancja:</strong> Dual-pool DHCP system (produkcja + NetBan)<br>
+                    • <strong>Skalowalność:</strong> Łatwe dodawanie nowych szaf/urządzeń przez trunk links<br>
+                    • <strong>Bezpieczeństwo:</strong> Multi-layer security (L2 filtering, L3 firewall, NAT)
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Uwaga techniczna:</strong>
+                    Fortinet w tej instalacji jest <strong>symulowany przez MikroTik C52iG</strong> w środowisku 
+                    dev/test. W produkcji należy zastąpić dedykowanym Fortinet FortiGate dla pełnej funkcjonalności 
+                    security (IPS/IDS, Application Control, SSL Inspection).
+                </div>
+            </div>
+
+            <!-- Section 2: Onboarding -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>2️⃣ Onboarding nowych urządzeń - Mechanizm NetBan</h2>
+                </div>
+
+                <div class="section-description">
+                    Każde nowe urządzenie podłączone do sieci LAN/WiFi <strong>automatycznie otrzymuje adres IP 
+                    z puli NetBan</strong> powiązanej z VLANem, który jest przypisany do portu switcha lub sieci WiFi. 
+                    Jest to mechanizm bezpieczeństwa zapobiegający nieautoryzowanemu dostępowi do sieci produkcyjnej.
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Rozpoznawanie nowych urządzeń:</strong>
+                    Otrzymany adres jest charakterystyczny – rozpoczyna się od <strong>100.XX.XX.XX</strong> – 
+                    gdzie pozostałe oktety (XX.XX.XX) wskazują na VLAN do którego należy port/sieć WiFi.<br>
+                    <br>
+                    <strong>Przykłady:</strong><br>
+                    • Port w VLAN110 → urządzenie dostaje <code>100.110.110.XXX</code><br>
+                    • WiFi w VLAN170 → urządzenie dostaje <code>100.170.170.XXX</code><br>
+                    • Port w VLAN300 → urządzenie dostaje <code>100.18.254.XXX</code>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔄 Proces onboardingu urządzenia</h3>
+
+                <div class="flow-container">
+                    <div class="flow-step">
+                        <strong>1. Nowe urządzenie</strong><br>
+                        Urządzenie podłączane do portu switcha lub WiFi
+                    </div>
+                    <div class="flow-step">
+                        <strong>2. DHCP Request</strong><br>
+                        CCR2004 przydziela IP z puli NetBan (100.XX.XX.XXX)
+                    </div>
+                    <div class="flow-step">
+                        <strong>3. Brak dostępu</strong><br>
+                        Fortinet firewall DROP całego ruchu z 100.x.x.x<br>
+                        ❌ Brak Internetu | ❌ Brak sieci wewnętrznej
+                    </div>
+                    <div class="flow-step">
+                        <strong>4. Identyfikacja przez admina</strong><br>
+                        Admin odczytuje MAC address urządzenia<br>
+                        (z CCR2004: DHCP leases lub bridge host table)
+                    </div>
+                    <div class="flow-step">
+                        <strong>5. Migracja do produkcji</strong><br>
+                        Użycie narzędzia: "Generator Przenoszenia VLAN"<br>
+                        Migracja MAC → sieć produkcyjna (10.XX.XX.XXX)
+                    </div>
+                    <div class="flow-step">
+                        <strong>6. Pełny dostęp</strong><br>
+                        Po odnowieniu DHCP lease:<br>
+                        ✅ Internet | ✅ Sieci wewnętrzne (zgodnie z firewall rules)
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Narzędzie: Generator Przenoszenia VLAN</strong>
+                    Dostępne w systemie zarządzania siecią (PietrzakVLAN-Katowice).<br>
+                    Narzędzie generuje komendy MikroTik do migracji urządzenia między sieciami:<br>
+                    • Usuwa stary lease NetBan<br>
+                    • Tworzy nowy static lease w sieci produkcyjnej<br>
+                    • Opcjonalnie: dodaje static ARP dla trusted devices<br>
+                    <br>
+                    Link: <a href="vlan_migration_tool-final-v4-popup.html" style="color: #667eea; font-weight: bold;">vlan_migration_tool-final-v4-popup.html</a>
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Zalety mechanizmu NetBan dla onboardingu:</strong>
+                    • <strong>Bezpieczeństwo:</strong> Nowe urządzenia domyślnie bez dostępu (zero-trust)<br>
+                    • <strong>Widoczność:</strong> Admin widzi wszystkie nowe urządzenia po IP 100.x.x.x<br>
+                    • <strong>Kontrola:</strong> Świadoma decyzja o dopuszczeniu urządzenia do sieci<br>
+                    • <strong>Automatyzacja:</strong> Generator VLAN upraszcza procedurę migracji<br>
+                    • <strong>Audit trail:</strong> Historia zmian DHCP leases
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ KRYTYCZNE: Urządzenia bez migracji NIE MAJĄ dostępu</strong>
+                    Urządzenie, które nie jest przypisane do sieci produkcyjnej (<code>10.XX.XX.XX</code> 
+                    lub <code>172.18.254.0/23</code>) <strong>NIE MA dostępu</strong> do Internetu oraz 
+                    pozostałych urządzeń w sieci. Jest to mechanizm bezpieczeństwa zapobiegający 
+                    nieautoryzowanemu dostępowi.
+                </div>
+            </div>
+
+            <!-- Section 3: Physical Architecture -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>3️⃣ Architektura fizyczna - 4 szafy</h2>
+                </div>
+
+                <div class="section-description">
+                    Topologia fizyczna oparta na <strong>centralnej szafie Renault</strong> łączącej się trunk links 
+                    z trzema szafami satelitarnymi (Ferrari, Peugeot, Lamborghini).
+                </div>
+
+                <div class="topology-diagram">
+                    <pre>
+                         Internet (ISP)
+                              |
+                              | WAN
+                              ↓
+                    ┌─────────────────────┐
+                    │  <strong>Szafa RENAULT</strong>      │
+                    │  (Centralna)        │
+                    │                     │
+                    │  [Fortinet]         │ ← Edge Security (Gateway + NAT + FW)
+                    │      ↓              │
+                    │  [CCR2004-L3]       │ ← Core L3 Switch + DHCP Server
+                    │      ↓              │
+                    │  [USW Aggregation]  │ ← Main Aggregation Switch
+                    │      ↓              │
+                    │  [USW 24 PRO-R]     │ ← Access Switch dla Renault
+                    │                     │
+                    └──────┬──────────────┘
+                           │ TRUNK (All VLANs)
+            ┌──────────────┼──────────────┬──────────────┐
+            │              │              │              │
+            ↓              ↓              ↓              ↓
+    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+    │ Szafa        │ │ Szafa        │ │ Szafa        │ │ Szafa        │
+    │ <strong>FERRARI</strong>      │ │ <strong>PEUGEOT</strong>      │ │ <strong>LAMBORGHINI</strong>  │ │ (future)     │
+    │              │ │              │ │              │ │              │
+    │ USW 24 PRO-F │ │ USW 24 PRO-P │ │ USW 24 PRO-L │ │              │
+    │     ↓        │ │     ↓        │ │     ↓        │ │              │
+    │ HP/D-LINK    │ │ HP/D-LINK    │ │ HP/D-LINK    │ │              │
+    │     ↓        │ │     ↓        │ │     ↓        │ │              │
+    │ AP U6PRO     │ │ AP U6PRO     │ │ AP U6PRO     │ │              │
+    └──────────────┘ └──────────────┘ └──────────────┘ └──────────────┘
+         │                │                │
+         └────────────────┴────────────────┘
+                    End Devices
+              (Komputery, drukarki, IoT)
+                    </pre>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">📦 Zawartość szaf</h3>
+                
+                <div class="cabinet-grid">
+                    <div class="cabinet-box">
+                        <h3>🏢 Szafa RENAULT (Centralna)</h3>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Fortinet</strong></td>
+                                    <td><span class="tag tag-edge">EDGE</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>MikroTik CCR2004-16G-2S+</strong></td>
+                                    <td><span class="tag tag-core">CORE L3</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>USW Aggregation</strong></td>
+                                    <td><span class="tag tag-core">AGGREGATION</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>USW 24 PRO-R</strong></td>
+                                    <td><span class="tag tag-access">ACCESS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AP U6PRO</strong></td>
+                                    <td><span class="tag tag-access">WiFi</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="cabinet-box">
+                        <h3>🏢 Szafa FERRARI</h3>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><strong>USW 24 PRO-F</strong></td>
+                                    <td><span class="tag tag-access">ACCESS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>HP/D-LINK switch</strong></td>
+                                    <td><span class="tag tag-access">ACCESS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AP U6PRO</strong></td>
+                                    <td><span class="tag tag-access">WiFi</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                            <strong>VLANy:</strong> 110 (docelowo), 150, 170, 300
+                        </div>
+                    </div>
+
+                    <div class="cabinet-box">
+                        <h3>🏢 Szafa PEUGEOT</h3>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><strong>USW 24 PRO-P</strong></td>
+                                    <td><span class="tag tag-access">ACCESS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>HP/D-LINK switch</strong></td>
+                                    <td><span class="tag tag-access">ACCESS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AP U6PRO</strong></td>
+                                    <td><span class="tag tag-access">WiFi</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                            <strong>VLANy:</strong> 120 (docelowo), 150, 170, 300
+                        </div>
+                    </div>
+
+                    <div class="cabinet-box">
+                        <h3>🏢 Szafa LAMBORGHINI</h3>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><strong>USW 24 PRO-L</strong></td>
+                                    <td><span class="tag tag-access">ACCESS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>HP/D-LINK switch</strong></td>
+                                    <td><span class="tag tag-access">ACCESS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AP U6PRO</strong></td>
+                                    <td><span class="tag tag-access">WiFi</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                            <strong>VLANy:</strong> 130, 150, 170, 300
+                        </div>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Połączenia trunk:</strong>
+                    Wszystkie szafy satelitarne (Ferrari, Peugeot, Lamborghini) są połączone z <strong>USW Aggregation</strong> 
+                    w szafie Renault za pomocą <strong>trunk links</strong> z wszystkimi VLANami tagged. To umożliwia centralne 
+                    zarządzanie VLANami i łatwe dodawanie nowych segmentów bez rekonfiguracji fizycznej.
+                </div>
+            </div>
+
+            <!-- Section 4: Logical Architecture -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>4️⃣ Architektura logiczna - Flow ruchu</h2>
+                </div>
+
+                <div class="section-description">
+                    Ruch sieciowy przechodzi przez <strong>3 warstwy</strong>: Edge (Fortinet), Core (CCR2004), 
+                    Access (USW switches). Każda warstwa ma określoną rolę w procesie routingu i bezpieczeństwa.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔄 Flow pakietu: Klient → Internet</h3>
+                
+                <div class="flow-container">
+                    <div class="flow-step">
+                        <strong>1. Klient</strong><br>
+                        Urządzenie końcowe (PC, drukarka, telefon)<br>
+                        Otrzymuje IP z DHCP: 10.X.X.Y/24
+                    </div>
+                    <div class="flow-step">
+                        <strong>2. Access Switch (USW 24 PRO)</strong><br>
+                        L2 switching w ramach VLANu<br>
+                        VLAN tagging na trunk do Aggregation
+                    </div>
+                    <div class="flow-step">
+                        <strong>3. Aggregation Switch (USW Agg)</strong><br>
+                        L2 aggregation i forwarding<br>
+                        Przekazuje do CCR2004 (gateway .254)
+                    </div>
+                    <div class="flow-step">
+                        <strong>4. Core L3 (CCR2004)</strong><br>
+                        Inter-VLAN routing<br>
+                        Forward do gateway .1 (Fortinet)
+                    </div>
+                    <div class="flow-step">
+                        <strong>5. Edge Security (Fortinet)</strong><br>
+                        Firewall filtering + NAT masquerade<br>
+                        Wysyła do Internetu przez WAN
+                    </div>
+                    <div class="flow-step">
+                        <strong>6. Internet</strong><br>
+                        Pakiet dociera do celu
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Kluczowe adresy IP w każdym VLANie:</strong>
+                    • <strong>10.X.X.1</strong> - Gateway (Fortinet) - default route dla klientów<br>
+                    • <strong>10.X.X.254</strong> - CCR2004 interface - inter-VLAN routing<br>
+                    • <strong>10.X.X.50-200</strong> - Pool produkcyjny DHCP (normalna praca)<br>
+                    • <strong>100.X.X.100-150</strong> - Pool NetBan (izolacja problemowych urządzeń)
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔀 Komunikacja między VLANami</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Źródło</th>
+                            <th>Cel</th>
+                            <th>Status</th>
+                            <th>Routing przez</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>VLAN100 (Renault)</td>
+                            <td>VLAN110 (Ferrari)</td>
+                            <td><span class="tag tag-access">✅ ALLOWED</span></td>
+                            <td>CCR2004 → Fortinet</td>
+                        </tr>
+                        <tr>
+                            <td>VLAN110 (Ferrari)</td>
+                            <td>VLAN300 (Serwery)</td>
+                            <td><span class="tag tag-access">✅ ALLOWED</span></td>
+                            <td>CCR2004 → Fortinet (grupa_robocza)</td>
+                        </tr>
+                        <tr>
+                            <td>VLAN170 (Goscie)</td>
+                            <td>VLAN100-140</td>
+                            <td><span class="tag tag-isolated">❌ BLOCKED</span></td>
+                            <td>Firewall DROP</td>
+                        </tr>
+                        <tr>
+                            <td>VLAN150 (IoT)</td>
+                            <td>Wszystkie 10.x.x.x</td>
+                            <td><span class="tag tag-isolated">❌ BLOCKED</span></td>
+                            <td>Firewall DROP (isolation)</td>
+                        </tr>
+                        <tr>
+                            <td>VLAN160 (VoIP)</td>
+                            <td>Wszystkie 10.x.x.x</td>
+                            <td><span class="tag tag-isolated">❌ BLOCKED</span></td>
+                            <td>Firewall DROP (isolation)</td>
+                        </tr>
+                        <tr>
+                            <td>Dowolny VLAN</td>
+                            <td>Internet</td>
+                            <td><span class="tag tag-access">✅ ALLOWED</span></td>
+                            <td>CCR2004 → Fortinet → NAT → WAN</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>⚠️ Address List "grupa_robocza":</strong>
+                    VLANy produkcyjne (100, 110, 120, 130, 140, 300) należą do <strong>grupa_robocza</strong> 
+                    i mogą komunikować się między sobą. Reguła firewall: <code>grupa_robocza → grupa_robocza = ACCEPT</code>
+                </div>
+            </div>
+
+            <!-- Section 5: VLANs -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>5️⃣ Segmentacja sieci - 12 VLANów</h2>
+                </div>
+
+                <div class="section-description">
+                    Sieć podzielona na <strong>12 segmentów VLAN</strong> z różnymi poziomami dostępu i izolacji. 
+                    Każdy segment ma dedykowane zastosowanie i policy bezpieczeństwa.
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VLAN ID</th>
+                            <th>Nazwa</th>
+                            <th>Sieć</th>
+                            <th>Kategoria</th>
+                            <th>Przeznaczenie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1</strong></td>
+                            <td>UniFi_Mgmt</td>
+                            <td>10.251.251.0/24</td>
+                            <td><span class="vlan-badge vlan-mgmt">Management</span></td>
+                            <td>Zarządzanie UniFi (Controller, AP, switches)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>100</strong></td>
+                            <td>Renault</td>
+                            <td>10.100.100.0/24</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>Główna sieć Renault (komputery, infrastruktura)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>110</strong></td>
+                            <td>Ferrari</td>
+                            <td>10.110.110.0/24</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>Sieć Ferrari (stacje robocze, zasoby)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>120</strong></td>
+                            <td>Peugeot</td>
+                            <td>10.120.120.0/24</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>Sieć Peugeot (użytkownicy, aplikacje)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>130</strong></td>
+                            <td>Lamborghini</td>
+                            <td>10.130.130.0/24</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>Sieć Lamborghini (workstations, zasoby)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>140</strong></td>
+                            <td>Drukarki</td>
+                            <td>10.140.140.0/24</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>Drukarki sieciowe, skanery, MFP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>150</strong></td>
+                            <td>IoT</td>
+                            <td>10.150.150.0/24</td>
+                            <td><span class="vlan-badge vlan-iot">Izolowany</span></td>
+                            <td>Urządzenia IoT (sensory, kamery, smart devices)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>160</strong></td>
+                            <td>VoIP</td>
+                            <td>10.160.160.0/24</td>
+                            <td><span class="vlan-badge vlan-iot">Izolowany</span></td>
+                            <td>Telefonia IP (telefony VoIP)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>170</strong></td>
+                            <td>Goscie</td>
+                            <td>10.170.170.0/24</td>
+                            <td><span class="vlan-badge vlan-guest">Guest</span></td>
+                            <td>WiFi dla gości z Captive Portal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>180</strong></td>
+                            <td>Backup_Net</td>
+                            <td>10.180.180.0/24</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>Sieć backupowa (dostęp whitelist)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>199</strong></td>
+                            <td>Blackhole</td>
+                            <td>10.199.199.0/24</td>
+                            <td><span class="vlan-badge vlan-iot">Blackhole</span></td>
+                            <td>Kwarantanna dla problemowych urządzeń</td>
+                        </tr>
+                        <tr>
+                            <td><strong>250</strong></td>
+                            <td>Mgmt</td>
+                            <td>10.250.250.0/24</td>
+                            <td><span class="vlan-badge vlan-mgmt">Management</span></td>
+                            <td>Management (rezerwowy, nie używany)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>300</strong></td>
+                            <td>Serwery</td>
+                            <td>172.18.254.0/23</td>
+                            <td><span class="vlan-badge vlan-prod">Produkcyjny</span></td>
+                            <td>Infrastruktura serwerowa</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>ℹ️ VLAN naming convention:</strong>
+                    VLANy nazwane są według schematu: <code>vlanXXX_Nazwa</code> gdzie XXX to VLAN ID.<br>
+                    Na przykład: <code>vlan110_Ferrari</code>, <code>vlan300_Serwery</code>
+                </div>
+            </div>
+
+            <!-- Section 6: Key Devices -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>6️⃣ Funkcje kluczowych urządzeń</h2>
+                </div>
+
+                <div class="section-description">
+                    Każde urządzenie core pełni specyficzną rolę w infrastrukturze. Podział funkcji zapewnia 
+                    separację warstw bezpieczeństwa i ułatwia troubleshooting.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔥 Fortinet (Edge Security)</h3>
+                <div class="cabinet-box">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><strong>Rola</strong></td>
+                                <td>Default Gateway + NAT Router + Firewall</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Model</strong></td>
+                                <td>Fortinet FortiGate (symulowany: MikroTik C52iG)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>IP w VLANach</strong></td>
+                                <td>10.X.X.1 (gateway dla wszystkich sieci)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>WAN Interface</strong></td>
+                                <td>ether1 - DHCP client od ISP</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LAN Interface</strong></td>
+                                <td>ether4 (trunk) + bridge1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 15px;">
+                        <strong>Funkcje:</strong><br>
+                        • <strong>Default Gateway:</strong> Wszystkie VLANy używają .1 jako gateway<br>
+                        • <strong>NAT/Masquerade:</strong> Translacja adresów prywatnych → publiczny IP WAN<br>
+                        • <strong>Firewall:</strong> Filtering, isolation rules, NetBan mechanism<br>
+                        • <strong>DNS Proxy:</strong> Forward DNS queries dla klientów<br>
+                        • <strong>WiFi AP:</strong> Dwa interfejsy WiFi (2.4GHz + 5GHz)
+                    </div>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🖥️ MikroTik CCR2004-16G-2S+ (Core L3)</h3>
+                <div class="cabinet-box">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><strong>Rola</strong></td>
+                                <td>Core L3 Switch + DHCP Server</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Model</strong></td>
+                                <td>CCR2004-16G-2S+ (RouterOS 7.18.2)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>IP w VLANach</strong></td>
+                                <td>10.X.X.254 (nie jest gateway!)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Uplink</strong></td>
+                                <td>ether2 → Fortinet</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Trunk</strong></td>
+                                <td>sfp-sfpplus2 → USW Aggregation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 15px;">
+                        <strong>Funkcje:</strong><br>
+                        • <strong>Inter-VLAN Routing:</strong> Routing między 12 VLANami<br>
+                        • <strong>DHCP Server:</strong> 13 serwerów DHCP (dual-pool system)<br>
+                        • <strong>Dual-Pool DHCP:</strong> Produkcja (10.x.x.x) + NetBan (100.x.x.x)<br>
+                        • <strong>Static ARP:</strong> Trusted devices i gateways<br>
+                        • <strong>Bridge Filters:</strong> DHCP snooping na trunk<br>
+                        • <strong>Custom Scripts:</strong> drop-host-v2, auto-cleanup guests
+                    </div>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔌 UniFi USW Switches (Access Layer)</h3>
+                <div class="cabinet-box">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><strong>USW Aggregation</strong></td>
+                                <td>Main aggregation switch w szafie Renault</td>
+                            </tr>
+                            <tr>
+                                <td><strong>USW 24 PRO-R</strong></td>
+                                <td>Access switch dla szafy Renault</td>
+                            </tr>
+                            <tr>
+                                <td><strong>USW 24 PRO-F</strong></td>
+                                <td>Access switch dla szafy Ferrari</td>
+                            </tr>
+                            <tr>
+                                <td><strong>USW 24 PRO-P</strong></td>
+                                <td>Access switch dla szafy Peugeot</td>
+                            </tr>
+                            <tr>
+                                <td><strong>USW 24 PRO-L</strong></td>
+                                <td>Access switch dla szafy Lamborghini</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 15px;">
+                        <strong>Funkcje:</strong><br>
+                        • <strong>L2 Switching:</strong> Forwarding w ramach VLANu<br>
+                        • <strong>VLAN Tagging:</strong> Tagged na trunk, untagged/access na portach końcowych<br>
+                        • <strong>PoE:</strong> Zasilanie AP U6PRO i innych urządzeń PoE<br>
+                        • <strong>Aggregation:</strong> USW Agg łączy wszystkie trunk links z szaf satelitarnych
+                    </div>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">📡 UniFi AP U6PRO (WiFi Access Points)</h3>
+                <div class="cabinet-box">
+                    <div style="margin-top: 15px;">
+                        <strong>Funkcje:</strong><br>
+                        • <strong>WiFi Coverage:</strong> Jeden AP w każdej szafie (Ferrari, Peugeot, Lambo, Renault)<br>
+                        • <strong>Multi-SSID:</strong> Możliwość mapowania różnych SSID do różnych VLANów<br>
+                        • <strong>Captive Portal:</strong> Guest WiFi (VLAN170) z portalem uwierzytelniającym<br>
+                        • <strong>Zarządzanie:</strong> Centralne przez UniFi Controller (10.251.251.10)<br>
+                        • <strong>PoE:</strong> Zasilane przez USW switches
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Separacja funkcji (Best Practice):</strong>
+                    • <strong>Fortinet</strong> = Security perimeter (firewall, NAT)<br>
+                    • <strong>CCR2004</strong> = Core routing + DHCP (business logic)<br>
+                    • <strong>USW switches</strong> = L2 switching (data plane)<br>
+                    • <strong>AP</strong> = WiFi access (wireless connectivity)<br>
+                    <br>
+                    Ta separacja umożliwia niezależne troubleshooting i łatwą wymianę/upgrade poszczególnych komponentów.
+                </div>
+            </div>
+
+            <!-- Section 7: Security -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>7️⃣ Zabezpieczenia wielowarstwowe</h2>
+                </div>
+
+                <div class="section-description">
+                    Infrastruktura wykorzystuje <strong>defense-in-depth</strong> strategy z zabezpieczeniami 
+                    na poziomie L2 (bridge filters), L3 (firewall), L4-7 (NAT, application filtering).
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🛡️ Warstwy bezpieczeństwa</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Warstwa</th>
+                            <th>Mechanizm</th>
+                            <th>Gdzie</th>
+                            <th>Cel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>L2</strong></td>
+                            <td>VLAN Filtering</td>
+                            <td>CCR2004, USW</td>
+                            <td>Hardware isolation między VLANami</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L2</strong></td>
+                            <td>Bridge Filters</td>
+                            <td>CCR2004</td>
+                            <td>DHCP snooping (drop rogue DHCP)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L2</strong></td>
+                            <td>ARP reply-only</td>
+                            <td>CCR2004</td>
+                            <td>Zapobiega ARP storms</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L2</strong></td>
+                            <td>Static ARP</td>
+                            <td>CCR2004</td>
+                            <td>Chroni przed ARP spoofing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>Stateful Firewall</td>
+                            <td>Fortinet</td>
+                            <td>Connection tracking (est/rel/invalid)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>Network Isolation</td>
+                            <td>Fortinet</td>
+                            <td>Izolacja: Guests (170), IoT (150), VoIP (160)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>Management Protection</td>
+                            <td>Fortinet</td>
+                            <td>VLAN1, VLAN250 chronione (drop all)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L3</strong></td>
+                            <td>NetBan Mechanism</td>
+                            <td>Fortinet</td>
+                            <td>Drop ruchu z puli 100.x.x.x (fake DHCP)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>L4</strong></td>
+                            <td>NAT/Masquerade</td>
+                            <td>Fortinet</td>
+                            <td>Ukrywa topologię wewnętrzną</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WiFi</strong></td>
+                            <td>WPA2/WPA3-PSK</td>
+                            <td>AP U6PRO, Fortinet WiFi</td>
+                            <td>Szyfrowanie ruchu wireless</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>⚠️ NetBan Mechanism - kluczowa funkcja security:</strong>
+                    Dual-pool DHCP system pozwala na dynamiczne przenoszenie urządzeń między pulami:<br>
+                    • <strong>Pool produkcyjny (10.x.x.x):</strong> Normalna praca, pełny dostęp<br>
+                    • <strong>Pool NetBan (100.x.x.x):</strong> Fake pool, firewall DROP całego ruchu<br>
+                    <br>
+                    Gdy admin stwierdzi problematyczne urządzenie, zmienia jego DHCP lease na NetBan pool. 
+                    Urządzenie po odnowieniu lease dostaje IP 100.x.x.x i jest automatycznie blokowane przez 
+                    firewall na Fortinet (pierwsza reguła).
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Izolacja segmentów:</strong>
+                    • <strong>VLAN170 (Goscie):</strong> Dostęp tylko do Internetu + Captive Portal (10.251.251.10:8443)<br>
+                    • <strong>VLAN150 (IoT):</strong> Całkowita izolacja od RFC1918, tylko Internet<br>
+                    • <strong>VLAN160 (VoIP):</strong> Izolacja od sieci wewnętrznych, tylko Internet<br>
+                    • <strong>VLAN180 (Backup_Net):</strong> Dostęp tylko dla whitelist (address-list: BackupNet_allow)<br>
+                    • <strong>VLAN199 (Blackhole):</strong> Kwarantanna, minimal connectivity
+                </div>
+            </div>
+
+            <!-- Section 8: DHCP -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>8️⃣ DHCP i adresacja automatyczna</h2>
+                </div>
+
+                <div class="section-description">
+                    CCR2004 obsługuje <strong>13 serwerów DHCP</strong> z innowacyjnym dual-pool system 
+                    umożliwiającym elastyczne zarządzanie dostępem do sieci.
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔄 Dual-Pool DHCP System</h3>
+                
+                <div class="info-box">
+                    <strong>ℹ️ Jak działa dual-pool:</strong>
+                    Każdy VLAN produkcyjny posiada <strong>dwie pule DHCP</strong>:<br>
+                    <br>
+                    <strong>1. Pula produkcyjna (10.x.x.x):</strong><br>
+                    • Range: 10.X.X.50-200<br>
+                    • Gateway: 10.X.X.1 (Fortinet)<br>
+                    • DNS: 1.1.1.1, 8.8.8.8<br>
+                    • Access: Pełny (według firewall rules)<br>
+                    <br>
+                    <strong>2. Pula NetBan (100.x.x.x):</strong><br>
+                    • Range: 100.X.X.100-150<br>
+                    • Gateway: 10.X.X.1 (Fortinet - ale firewall DROP!)<br>
+                    • DNS: 1.1.1.1, 8.8.8.8<br>
+                    • Access: <strong>ZABLOKOWANY</strong> (firewall reguła #1)
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Procedura NetBan urządzenia:</strong>
+                    1. Admin identyfikuje problematyczne urządzenie (MAC lub IP)<br>
+                    2. Na CCR2004: usuwa obecny lease produkcyjny<br>
+                    3. Tworzy static lease z MAC → IP z puli NetBan (100.x.x.x)<br>
+                    4. Urządzenie przy renewal dostaje IP 100.x.x.x<br>
+                    5. Fortinet automatycznie DROP pakiety od 100.x.x.x (reguła firewall)<br>
+                    6. Urządzenie ma connectivity (ping gateway działa), ale brak dostępu do sieci<br>
+                    <br>
+                    <strong>Alternatywnie:</strong> Użyj custom script <code>drop-host-v2</code> dla instant ban 
+                    (usuwa ARP, lease, conntrack, dodaje L2 block).
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">📋 DHCP Servers Overview</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>VLAN</th>
+                            <th>Server Name</th>
+                            <th>Pool Type</th>
+                            <th>Lease Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>VLAN1</td>
+                            <td>dhcp_VLAN1_UniFi_Mgmt</td>
+                            <td>Produkcja (10.251.251.50-253)</td>
+                            <td>1h</td>
+                        </tr>
+                        <tr>
+                            <td>VLAN100</td>
+                            <td>dhcp_VLAN100_NetBan</td>
+                            <td>NetBan (100.100.100.x)</td>
+                            <td>10m</td>
+                        </tr>
+                        <tr>
+                            <td>VLAN110</td>
+                            <td>dhcp_VLAN110_NetBan</td>
+                            <td>NetBan (100.110.110.x)</td>
+                            <td>1h</td>
+                        </tr>
+                        <tr>
+                            <td>VLAN170</td>
+                            <td>dhcp_VLAN170_Goscie</td>
+                            <td>Produkcja (10.170.170.10-250)</td>
+                            <td>4h (auto-cleanup)</td>
+                        </tr>
+                        <tr>
+                            <td>VLAN300</td>
+                            <td>dhcp_VLAN300_NetBan</td>
+                            <td>Dual: prod 172.18.254.x + NetBan 100.18.254.x</td>
+                            <td>10m</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <strong>✅ Static DHCP Leases (Trusted Devices):</strong>
+                    Niektóre urządzenia posiadają <strong>statyczne rezerwacje DHCP</strong> w puli produkcyjnej:<br>
+                    • UniFi Controllers (10.251.251.10, .15, .249, .251)<br>
+                    • Trusted workstations (darek-lapXY, darekWiFi, wifiRPI, test-kopia)<br>
+                    • Static leases zapewniają przewidywalny IP dla kluczowych urządzeń
+                </div>
+
+                <div class="info-box">
+                    <strong>ℹ️ Auto-cleanup dla VLAN170 (Goscie):</strong>
+                    Scheduler automatycznie usuwa nieaktywne leases gości:<br>
+                    • Interval: co 6 godzin<br>
+                    • Warunek: status=waiting AND last-seen>24h<br>
+                    • Cel: Zapobiega wyczerpaniu puli DHCP dla gości
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Dokumentacja wygenerowana:</strong> 2025-10-23</p>
+            <p><strong>Źródła:</strong> ccr-all-23102025.rsc, malyMT-all-23102025.rsc, SiecDiagram.png</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                <strong>PietrzakVLAN-Katowice</strong> | Network Architecture Summary
+            </p>
+            <p style="font-size: 0.85em; color: #999; margin-top: 10px;">
+                © 2025 | Katowice, Śląsk | Multi-Site Network Infrastructure
+            </p>
+        </div>
+    </div>
+</body>
+</html>
