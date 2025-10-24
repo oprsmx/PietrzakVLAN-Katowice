@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przewodnik Użytkownika - drop-host Scripts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .section-header h2 {
+            font-size: 1.8em;
+        }
+        .step-box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .step-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+        .code-block code {
+            display: block;
+            white-space: pre;
+        }
+        .comment {
+            color: #6a9955;
+        }
+        .keyword {
+            color: #569cd6;
+        }
+        .string {
+            color: #ce9178;
+        }
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #155724;
+            line-height: 1.6;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #856404;
+            line-height: 1.6;
+        }
+        .danger-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #721c24;
+            line-height: 1.6;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        .decision-tree {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 25px 0;
+            font-family: monospace;
+            line-height: 2;
+        }
+        .script-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .card {
+            background: white;
+            border: 3px solid;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+        }
+        .card.soft {
+            border-color: #28a745;
+        }
+        .card.hard {
+            border-color: #dc3545;
+        }
+        .card h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        .card.soft h3 {
+            color: #28a745;
+        }
+        .card.hard h3 {
+            color: #dc3545;
+        }
+        .command-box {
+            background: #2d2d2d;
+            color: #4EC9B0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #dee2e6;
+        }
+        .tag {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin: 5px;
+        }
+        .tag-soft {
+            background: #d4edda;
+            color: #155724;
+        }
+        .tag-hard {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📖 Przewodnik Użytkownika</h1>
+            <p>drop-host-soft & drop-host-v2 - Praktyczne użycie krok po kroku</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Quick Start -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>⚡ Quick Start - 30 sekund</h2>
+                </div>
+
+                <div class="script-card">
+                    <div class="card soft">
+                        <h3>🧹 drop-host-soft</h3>
+                        <p style="margin: 15px 0; font-size: 1.1em;"><strong>Czyszczenie bez blokowania</strong></p>
+                        <div class="command-box">
+:global HOSTID "MAC-LUB-IP"<br>
+/system script run drop-host-soft
+                        </div>
+                        <p style="margin-top: 15px; color: #28a745; font-weight: bold;">✅ Urządzenie może wrócić</p>
+                    </div>
+
+                    <div class="card hard">
+                        <h3>🚫 drop-host-v2</h3>
+                        <p style="margin: 15px 0; font-size: 1.1em;"><strong>Blokada permanentna</strong></p>
+                        <div class="command-box">
+:global HOSTID "MAC-LUB-IP"<br>
+/system script run drop-host-v2
+                        </div>
+                        <p style="margin-top: 15px; color: #dc3545; font-weight: bold;">🚫 Urządzenie zablokowane</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>💡 Który wybrać?</strong><br>
+                    • <strong>Zezłomowanie PC / wymiana urządzenia / maintenance?</strong> → drop-host-soft<br>
+                    • <strong>Security incident / malware / unauthorized device?</strong> → drop-host-v2
+                </div>
+            </div>
+
+            <!-- Section 1: Installation -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>1️⃣ Instalacja skryptów</h2>
+                </div>
+
+                <div class="step-box">
+                    <h3>Opcja A: Import pliku .rsc (ŁATWIEJSZA) ✅</h3>
+                    <p style="margin-bottom: 15px;">Jeśli masz plik <code>drop-host-soft.rsc</code>:</p>
+                    
+                    <strong>Krok 1:</strong> Wgraj plik do MikroTik
+                    <ul style="margin: 10px 0 15px 20px; line-height: 1.8;">
+                        <li>WinBox: Files → Drag & Drop plik .rsc</li>
+                        <li>FTP: Wgraj do głównego katalogu</li>
+                        <li>WebFig: Files → Upload</li>
+                    </ul>
+
+                    <strong>Krok 2:</strong> Zaimportuj skrypt
+                    <div class="code-block">
+                        <code><span class="comment"># W MikroTik terminal:</span>
+<span class="keyword">/import</span> drop-host-soft.rsc
+
+<span class="comment"># Zobaczysz:</span>
+<span class="comment"># Script 'drop-host-soft' added successfully</span></code>
+                    </div>
+
+                    <strong>Krok 3:</strong> Sprawdź instalację
+                    <div class="code-block">
+                        <code><span class="keyword">/system script print</span>
+
+<span class="comment"># Powinieneś zobaczyć:</span>
+<span class="comment"># 0 name="drop-host-soft" ...</span></code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Opcja B: Ręczne dodanie (jeśli nie masz pliku .rsc)</h3>
+                    <p style="margin-bottom: 15px;">Skopiuj cały kod z dokumentacji i wklej do MikroTik terminal:</p>
+
+                    <div class="code-block">
+                        <code><span class="comment"># Skopiuj pełen kod z dokumentacji:</span>
+<span class="keyword">/system script add</span> name=drop-host-soft policy=\
+ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source="..."
+
+<span class="comment"># Wklej do terminala i naciśnij Enter</span></code>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Powtórz procedurę dla drop-host-v2!</strong><br>
+                    Zainstaluj oba skrypty aby mieć pełną funkcjonalność.
+                </div>
+            </div>
+
+            <!-- Section 2: Basic Usage -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>2️⃣ Podstawowe użycie - Krok po kroku</h2>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">📝 Scenariusz 1: Zezłomowanie PC (drop-host-soft)</h3>
+
+                <div class="step-box">
+                    <h3>Sytuacja</h3>
+                    <p>Komputer z MAC address <code>34:29:8F:74:EC:46</code> został zezłomowany. Musisz wyczyścić jego wpisy z routera aby zwolnić adres IP w puli DHCP.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 1: Połącz się z MikroTik</h3>
+                    <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                        <li>WinBox: IP routera → Login</li>
+                        <li>SSH: <code>ssh admin@IP-routera</code></li>
+                        <li>Telnet: <code>telnet IP-routera</code></li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 2: Znajdź MAC lub IP urządzenia</h3>
+                    <p style="margin-bottom: 15px;">Możesz użyć MAC address lub IP address (skrypt znajdzie oba):</p>
+                    <div class="code-block">
+                        <code><span class="comment"># Znajdź DHCP lease po MAC</span>
+<span class="keyword">/ip dhcp-server lease print</span> where mac-address~<span class="string">"34:29"</span>
+
+<span class="comment"># Lub znajdź po IP</span>
+<span class="keyword">/ip dhcp-server lease print</span> where address~<span class="string">"10.110.110"</span>
+
+<span class="comment"># Output przykładowy:</span>
+<span class="comment"># 0 10.110.110.22  34:29:8F:74:EC:46  bound    dhcp_VLAN110_NetBan</span></code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 3: Ustaw zmienną HOSTID</h3>
+                    <div class="code-block">
+                        <code><span class="comment"># Możesz użyć MAC:</span>
+<span class="keyword">:global</span> HOSTID <span class="string">"34:29:8F:74:EC:46"</span>
+
+<span class="comment"># LUB IP:</span>
+<span class="keyword">:global</span> HOSTID <span class="string">"10.110.110.22"</span>
+
+<span class="comment"># Skrypt automatycznie znajdzie oba</span></code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 4: Uruchom skrypt drop-host-soft</h3>
+                    <div class="code-block">
+                        <code><span class="keyword">/system script run</span> drop-host-soft</code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 5: Sprawdź output</h3>
+                    <p style="margin-bottom: 15px;">Zobaczysz szczegółowy raport co zostało wyczyszczone:</p>
+                    <div class="code-block">
+                        <code>drop-host-soft: cel=34:29:8F:74:EC:46 -> IP=10.110.110.22, MAC=34:29:8F:74:EC:46
+drop-host-soft: ARP usunięty dla IP 10.110.110.22
+drop-host-soft: ARP usunięty dla MAC 34:29:8F:74:EC:46
+drop-host-soft: lease DHCP usunięty (MAC) 34:29:8F:74:EC:46
+drop-host-soft: bridge-host usunięty dla MAC 34:29:8F:74:EC:46
+drop-host-soft: bridge-host usunięty dla IP 10.110.110.22
+drop-host-soft: conntrack rm src=10.110.110.22
+drop-host-soft: conntrack rm dst=10.110.110.22
+drop-host-soft: OK -> IP=10.110.110.22, MAC=34:29:8F:74:EC:46 (SOFT - bez blokady)</code>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Gotowe!</strong><br>
+                    • Wszystkie wpisy routera dla tego urządzenia są wyczyszczone<br>
+                    • Adres IP 10.110.110.22 jest zwolniony w puli DHCP<br>
+                    • Nowe urządzenia mogą dostać ten IP<br>
+                    • Jeśli PC zostanie przypadkowo ponownie podłączony, dostanie nowy DHCP lease
+                </div>
+
+                <h3 style="margin: 50px 0 15px 0; color: #667eea;">🚨 Scenariusz 2: Security Incident (drop-host-v2)</h3>
+
+                <div class="step-box">
+                    <h3>Sytuacja</h3>
+                    <p>Komputer <code>10.110.110.55</code> został zainfekowany malware i skanuje sieć. Musisz NATYCHMIAST odciąć go od sieci i zablokować permanentnie.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 1-2: Połącz się i znajdź urządzenie</h3>
+                    <p>(Tak samo jak w scenariuszu 1)</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 3: Ustaw HOSTID i uruchom drop-host-v2</h3>
+                    <div class="code-block">
+                        <code><span class="comment"># Szybka reakcja - użyj IP (szybsze)</span>
+<span class="keyword">:global</span> HOSTID <span class="string">"10.110.110.55"</span>
+<span class="keyword">/system script run</span> drop-host-v2</code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 4: Sprawdź output</h3>
+                    <div class="code-block">
+                        <code>drop-host-v2: cel=10.110.110.55 -> IP=10.110.110.55, MAC=D8:3A:DD:ED:7F:1B
+drop-host-v2: ARP usunięty dla IP 10.110.110.55
+drop-host-v2: ARP usunięty dla MAC D8:3A:DD:ED:7F:1B
+drop-host-v2: lease DHCP usunięty (MAC) D8:3A:DD:ED:7F:1B
+drop-host-v2: bridge-host usunięty dla MAC D8:3A:DD:ED:7F:1B
+drop-host-v2: bridge-host usunięty dla IP 10.110.110.55
+drop-host-v2: conntrack rm src=10.110.110.55
+drop-host-v2: conntrack rm dst=10.110.110.55
+<strong>drop-host-v2: dodano blokadę L2 dla MAC D8:3A:DD:ED:7F:1B</strong>
+drop-host-v2: OK -> IP=10.110.110.55, MAC=D8:3A:DD:ED:7F:1B</code>
+                    </div>
+                </div>
+
+                <div class="danger-box">
+                    <strong>🚫 UWAGA: Permanent block aktywny!</strong><br>
+                    • Urządzenie jest NATYCHMIAST odcięte od sieci<br>
+                    • Wszystkie aktywne połączenia przerwane<br>
+                    • <strong>Bridge filter DROP</strong> dodany - permanent block<br>
+                    • Nawet po reboot urządzenie NIE połączy się do sieci<br>
+                    • Wymaga ręcznego odblokowania przez admina
+                </div>
+            </div>
+
+            <!-- Section 3: Verification -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>3️⃣ Weryfikacja - Jak sprawdzić czy zadziałało?</h2>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">✅ Po drop-host-soft</h3>
+
+                <div class="code-block">
+                    <code><span class="comment"># 1. Sprawdź DHCP leases (powinno być puste)</span>
+<span class="keyword">/ip dhcp-server lease print</span> where mac-address=<span class="string">"34:29:8F:74:EC:46"</span>
+<span class="comment"># Wynik: (pusty)</span>
+
+<span class="comment"># 2. Sprawdź ARP table (powinno być puste)</span>
+<span class="keyword">/ip arp print</span> where address=<span class="string">"10.110.110.22"</span>
+<span class="comment"># Wynik: (pusty)</span>
+
+<span class="comment"># 3. Sprawdź bridge host table (powinno być puste)</span>
+<span class="keyword">/interface bridge host print</span> where mac-address=<span class="string">"34:29:8F:74:EC:46"</span>
+<span class="comment"># Wynik: (pusty)</span>
+
+<span class="comment"># 4. Sprawdź logi</span>
+<span class="keyword">/log print</span> where message~<span class="string">"drop-host-soft"</span>
+<span class="comment"># Zobaczysz pełną historię operacji</span></code>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🚫 Po drop-host-v2</h3>
+
+                <div class="code-block">
+                    <code><span class="comment"># 1. NAJWAŻNIEJSZE: Sprawdź bridge filter (permanent block)</span>
+<span class="keyword">/interface bridge filter print</span> where comment~<span class="string">"drop-host-v2"</span>
+
+<span class="comment"># Output przykładowy:</span>
+<span class="comment"># 0   ;;; drop-host-v2 block D8:3A:DD:ED:7F:1B</span>
+<span class="comment">#     chain=forward action=drop mac-src-address=D8:3A:DD:ED:7F:1B</span>
+<span class="comment"># ☝️ To jest permanent block!</span>
+
+<span class="comment"># 2. Sprawdź DHCP leases (powinno być puste)</span>
+<span class="keyword">/ip dhcp-server lease print</span> where mac-address=<span class="string">"D8:3A:DD:ED:7F:1B"</span>
+
+<span class="comment"># 3. Sprawdź logi</span>
+<span class="keyword">/log print</span> where message~<span class="string">"drop-host-v2"</span></code>
+                </div>
+            </div>
+
+            <!-- Section 4: Unblocking -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>4️⃣ Odblokowanie urządzenia (tylko drop-host-v2)</h2>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Uwaga:</strong> drop-host-soft NIE blokuje urządzeń permanentnie, więc nie wymaga odblokowania. Ta sekcja dotyczy TYLKO drop-host-v2.
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 1: Znajdź bridge filter rule</h3>
+                    <div class="code-block">
+                        <code><span class="keyword">/interface bridge filter print</span> where comment~<span class="string">"drop-host-v2 block"</span>
+
+<span class="comment"># Output:</span>
+<span class="comment"># 0   ;;; drop-host-v2 block D8:3A:DD:ED:7F:1B</span>
+<span class="comment">#     chain=forward action=drop mac-src-address=D8:3A:DD:ED:7F:1B</span>
+<span class="comment">#</span>
+<span class="comment"># Zapamiętaj numer (0 w tym przykładzie)</span></code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 2: Usuń blokadę</h3>
+                    <div class="code-block">
+                        <code><span class="comment"># Usuń regułę bridge filter (zmień 0 na właściwy numer)</span>
+<span class="keyword">/interface bridge filter remove</span> 0
+
+<span class="comment"># Bez output = sukces</span></code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 3: (Opcjonalnie) Dodaj DHCP lease</h3>
+                    <p style="margin-bottom: 15px;">Jeśli chcesz aby urządzenie dostało z powrotem dostęp do sieci produkcyjnej:</p>
+                    <div class="code-block">
+                        <code><span class="comment"># Opcja A: Użyj Generator Przenoszenia VLAN (zalecane)</span>
+<span class="comment"># - Otwórz narzędzie VLAN Migration Tool</span>
+<span class="comment"># - Wpisz MAC: D8:3A:DD:ED:7F:1B</span>
+<span class="comment"># - Wybierz docelową sieć produkcyjną</span>
+<span class="comment"># - Skopiuj i wykonaj wygenerowane komendy</span>
+
+<span class="comment"># Opcja B: Ręcznie dodaj lease</span>
+<span class="keyword">/ip dhcp-server lease add</span> \
+    mac-address=<span class="string">D8:3A:DD:ED:7F:1B</span> \
+    address=<span class="string">10.110.110.55</span> \
+    server=<span class="string">dhcp_VLAN110_Ferrari</span> \
+    comment=<span class="string">"Restored after security incident"</span></code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Krok 4: Odnów DHCP na urządzeniu końcowym</h3>
+                    <p style="margin-bottom: 15px;">Na komputerze/urządzeniu:</p>
+                    <div class="code-block">
+                        <code><span class="comment"># Windows (CMD jako Administrator):</span>
+ipconfig /release
+ipconfig /renew
+
+<span class="comment"># Linux:</span>
+sudo dhclient -r
+sudo dhclient
+
+<span class="comment"># Mac:</span>
+<span class="comment"># System Preferences > Network > Advanced > TCP/IP > Renew DHCP Lease</span></code>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Urządzenie odblokowane!</strong><br>
+                    • Bridge filter usunięty - urządzenie może łączyć się na poziomie L2<br>
+                    • DHCP lease dodany - urządzenie dostanie IP<br>
+                    • Po odnowieniu DHCP urządzenie ma pełen dostęp do sieci
+                </div>
+            </div>
+
+            <!-- Section 5: Decision Tree -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>5️⃣ Który skrypt wybrać? - Drzewo decyzyjne</h2>
+                </div>
+
+                <div class="decision-tree">
+<strong>Musisz usunąć wpisy urządzenia?</strong>
+│
+├─ Urządzenie USUNIĘTE fizycznie? (zezłomowane, przekazane)
+│  └─ <span style="color: #28a745;">✅ drop-host-soft</span>
+│
+├─ Urządzenie WYMIENIONE? (stary PC → nowy PC)
+│  └─ <span style="color: #28a745;">✅ drop-host-soft</span>
+│
+├─ Maintenance cleanup? (regularne czyszczenie)
+│  └─ <span style="color: #28a745;">✅ drop-host-soft</span>
+│
+├─ Troubleshooting? (refresh cache, stale ARP)
+│  └─ <span style="color: #28a745;">✅ drop-host-soft</span>
+│
+├─ Inventory audit? (synchronizacja z rzeczywistością)
+│  └─ <span style="color: #28a745;">✅ drop-host-soft</span>
+│
+├─ Security incident? (malware, kompromitacja)
+│  └─ <span style="color: #dc3545;">🚫 drop-host-v2</span>
+│
+├─ Malware infection? (podejrzenie infekcji)
+│  └─ <span style="color: #dc3545;">🚫 drop-host-v2</span>
+│
+├─ Unauthorized device? (rogue device w sieci)
+│  └─ <span style="color: #dc3545;">🚫 drop-host-v2</span>
+│
+└─ Emergency disconnect? (DDoS source, attack)
+   └─ <span style="color: #dc3545;">🚫 drop-host-v2</span>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sytuacja</th>
+                            <th>drop-host-soft</th>
+                            <th>drop-host-v2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Zezłomowanie PC</strong></td>
+                            <td style="background: #d4edda; text-align: center;"><strong>✅ TAK</strong></td>
+                            <td style="background: #f8d7da; text-align: center;">❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Wymiana urządzenia</strong></td>
+                            <td style="background: #d4edda; text-align: center;"><strong>✅ TAK</strong></td>
+                            <td style="background: #f8d7da; text-align: center;">❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maintenance cleanup</strong></td>
+                            <td style="background: #d4edda; text-align: center;"><strong>✅ TAK</strong></td>
+                            <td style="background: #f8d7da; text-align: center;">❌ Nie</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Security incident</strong></td>
+                            <td style="background: #f8d7da; text-align: center;">❌ Nie</td>
+                            <td style="background: #d4edda; text-align: center;"><strong>✅ TAK</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Malware infection</strong></td>
+                            <td style="background: #f8d7da; text-align: center;">❌ Nie</td>
+                            <td style="background: #d4edda; text-align: center;"><strong>✅ TAK</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Unauthorized device</strong></td>
+                            <td style="background: #f8d7da; text-align: center;">❌ Nie</td>
+                            <td style="background: #d4edda; text-align: center;"><strong>✅ TAK</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Troubleshooting</strong></td>
+                            <td style="background: #d4edda; text-align: center;"><strong>✅ TAK</strong></td>
+                            <td style="background: #fff3cd; text-align: center;">⚠️ Overkill</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section 6: Common Errors -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>6️⃣ Najczęstsze błędy i rozwiązania</h2>
+                </div>
+
+                <div class="step-box">
+                    <h3>❌ Błąd: "drop-host-soft: ustaw najpierw :global HOSTID"</h3>
+                    <p><strong>Przyczyna:</strong> Nie ustawiłeś zmiennej HOSTID przed uruchomieniem skryptu</p>
+                    <p><strong>Rozwiązanie:</strong></p>
+                    <div class="code-block">
+                        <code><span class="comment"># Ustaw HOSTID PRZED uruchomieniem:</span>
+<span class="keyword">:global</span> HOSTID <span class="string">"34:29:8F:74:EC:46"</span>
+<span class="keyword">/system script run</span> drop-host-soft</code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>❌ Błąd: "no such script"</h3>
+                    <p><strong>Przyczyna:</strong> Skrypt nie jest zainstalowany w systemie</p>
+                    <p><strong>Rozwiązanie:</strong></p>
+                    <div class="code-block">
+                        <code><span class="comment"># Sprawdź czy skrypt istnieje:</span>
+<span class="keyword">/system script print</span>
+
+<span class="comment"># Jeśli nie ma drop-host-soft, zainstaluj go ponownie (sekcja 1)</span></code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>⚠️ Urządzenie nadal ma dostęp (po drop-host-v2)</h3>
+                    <p><strong>Przyczyna:</strong> Bridge filter może nie działać lub został źle dodany</p>
+                    <p><strong>Rozwiązanie:</strong></p>
+                    <div class="code-block">
+                        <code><span class="comment"># Sprawdź czy bridge filter istnieje:</span>
+<span class="keyword">/interface bridge filter print</span> where comment~<span class="string">"drop-host-v2"</span>
+
+<span class="comment"># Jeśli nie ma wpisu, uruchom skrypt ponownie</span>
+<span class="comment"># Sprawdź logi aby zobaczyć co poszło nie tak:</span>
+<span class="keyword">/log print</span> where message~<span class="string">"drop-host-v2"</span></code>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>⚠️ Nie można znaleźć MAC/IP urządzenia</h3>
+                    <p><strong>Przyczyna:</strong> Urządzenie nie ma aktywnego DHCP lease lub bridge host entry</p>
+                    <p><strong>Rozwiązanie:</strong></p>
+                    <div class="code-block">
+                        <code><span class="comment"># Szukaj w różnych miejscach:</span>
+
+<span class="comment"># 1. DHCP leases (aktywne i nieaktywne)</span>
+<span class="keyword">/ip dhcp-server lease print</span>
+
+<span class="comment"># 2. Bridge host table (tylko aktywne urządzenia)</span>
+<span class="keyword">/interface bridge host print</span>
+
+<span class="comment"># 3. ARP table</span>
+<span class="keyword">/ip arp print</span>
+
+<span class="comment"># 4. Jeśli urządzenie jest offline, podaj MAC ręcznie:</span>
+<span class="keyword">:global</span> HOSTID <span class="string">"34:29:8F:74:EC:46"</span>
+<span class="keyword">/system script run</span> drop-host-soft</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 7: Cheatsheet -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>7️⃣ Cheatsheet - Szybkie komendy</h2>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🚀 Użycie skryptów</h3>
+                <div class="code-block">
+                    <code><span class="comment"># drop-host-soft (bez permanent block)</span>
+<span class="keyword">:global</span> HOSTID <span class="string">"MAC-LUB-IP"</span>
+<span class="keyword">/system script run</span> drop-host-soft
+
+<span class="comment"># drop-host-v2 (z permanent block)</span>
+<span class="keyword">:global</span> HOSTID <span class="string">"MAC-LUB-IP"</span>
+<span class="keyword">/system script run</span> drop-host-v2</code>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔍 Weryfikacja</h3>
+                <div class="code-block">
+                    <code><span class="comment"># Sprawdź DHCP leases</span>
+<span class="keyword">/ip dhcp-server lease print</span> where mac-address=<span class="string">"MAC"</span>
+
+<span class="comment"># Sprawdź ARP</span>
+<span class="keyword">/ip arp print</span> where mac-address=<span class="string">"MAC"</span>
+
+<span class="comment"># Sprawdź bridge filter (permanent blocks)</span>
+<span class="keyword">/interface bridge filter print</span> where comment~<span class="string">"drop-host-v2"</span>
+
+<span class="comment"># Sprawdź logi</span>
+<span class="keyword">/log print</span> where message~<span class="string">"drop-host"</span></code>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">🔓 Odblokowanie (tylko v2)</h3>
+                <div class="code-block">
+                    <code><span class="comment"># Znajdź i usuń bridge filter</span>
+<span class="keyword">/interface bridge filter print</span> where comment~<span class="string">"drop-host-v2 block"</span>
+<span class="keyword">/interface bridge filter remove</span> [numer]
+
+<span class="comment"># Dodaj DHCP lease z powrotem</span>
+<span class="keyword">/ip dhcp-server lease add</span> mac-address=<span class="string">MAC</span> address=<span class="string">IP</span> server=<span class="string">DHCP_SERVER</span></code>
+                </div>
+
+                <h3 style="margin: 30px 0 15px 0; color: #667eea;">📊 Diagnostyka</h3>
+                <div class="code-block">
+                    <code><span class="comment"># Lista wszystkich skryptów</span>
+<span class="keyword">/system script print</span>
+
+<span class="comment"># Zobacz zawartość skryptu</span>
+<span class="keyword">/system script print</span> detail where name=<span class="string">"drop-host-soft"</span>
+
+<span class="comment"># Wszystkie permanent blocks</span>
+<span class="keyword">/interface bridge filter print</span> where action=<span class="string">drop</span>
+
+<span class="comment"># Nieaktywne DHCP leases (kandydaci do cleanup)</span>
+<span class="keyword">/ip dhcp-server lease print</span> where last-seen>7d</code>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Dokumentacja wygenerowana:</strong> 2025-10-23</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                <strong>PietrzakVLAN-Katowice</strong> | Praktyczny przewodnik użytkownika
+            </p>
+            <p style="font-size: 0.85em; color: #999; margin-top: 10px;">
+                © 2025 | Katowice, Śląsk
+            </p>
+        </div>
+    </div>
+</body>
+</html>
