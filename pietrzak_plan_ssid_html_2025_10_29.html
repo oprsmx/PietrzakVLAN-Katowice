@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pietrzak – Plan SSID</title>
+  <style>
+    :root{
+      --bg1:#5b2be0; /* violet */
+      --bg2:#1fa2ff; /* blue */
+      --panel:#ffffff;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --accent:#7c3aed;
+      --ok:#10b981;
+      --warn:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,Segoe UI,Roboto,Arial,Helvetica,sans-serif; color:var(--text);
+      background: linear-gradient(135deg,var(--bg1),var(--bg2)) fixed; 
+    }
+    .wrap{max-width:1100px;margin:48px auto;padding:0 20px}
+    .card{
+      background:var(--panel); border-radius:20px; box-shadow:0 12px 30px rgba(2,6,23,.25);
+      overflow:hidden;
+    }
+    header{
+      padding:28px 28px 16px; color:#fff; 
+      background:linear-gradient(135deg,rgba(91,43,224,.95),rgba(31,162,255,.95));
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    header .title{display:flex; align-items:center; gap:14px}
+    .logo{width:38px;height:38px;border-radius:12px;background:#fff1;display:grid;place-items:center;border:1px solid #ffffff55}
+    .logo span{font-weight:900;color:#fff}
+    h1{font-size:clamp(18px,2.6vw,28px);margin:0}
+    .date{font-size:13px;opacity:.9}
+
+    .panel{padding:22px}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 22px}
+    .badge{padding:6px 10px;border-radius:999px;background:#f1f5f9;border:1px solid #e2e8f0;color:#0f172a;font-size:12px}
+
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 14px}
+    tbody tr{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(2,6,23,.06)}
+    tbody tr td{padding:14px}
+    tbody tr td:first-child{border-top-left-radius:14px;border-bottom-left-radius:14px}
+    tbody tr td:last-child{border-top-right-radius:14px;border-bottom-right-radius:14px}
+    .ssid{font-weight:650}
+    .vl{font-variant-numeric:tabular-nums}
+    .grp{display:inline-flex;align-items:center;gap:8px}
+    .dot{width:8px;height:8px;border-radius:50%}
+    .g-all{background:var(--ok)}
+    .g-guest{background:var(--warn)}
+    .g-site{background:#3b82f6}
+
+    .footer{padding:18px 22px;color:var(--muted);font-size:13px;border-top:1px solid #e5e7eb}
+    .hint{margin:0}
+
+    @media (max-width:820px){
+      .grid{grid-template-columns:1fr}
+      thead{display:none}
+      tbody tr{display:grid;grid-template-columns:1fr;gap:0}
+      tbody td{display:flex;justify-content:space-between;gap:18px}
+      tbody td::before{content:attr(data-label);font-weight:600;color:var(--muted)}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <div class="title">
+          <div class="logo"><span>PV</span></div>
+          <div>
+            <h1>Plan SSID – Pietrzak VLAN</h1>
+            <div class="date">Utworzono: 2025-10-29</div>
+          </div>
+        </div>
+      </header>
+      <div class="panel">
+        <table aria-label="Tabela SSID">
+          <thead>
+            <tr>
+              <th>SSID</th>
+              <th>Hasło</th>
+              <th>VLAN</th>
+              <th>Grupa AP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ssid" data-label="SSID">GrupaPietrzakV2</td>
+              <td data-label="Hasło">Pietrzak2025</td>
+              <td class="vl" data-label="VLAN">300</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-all"></span>WszystkieAP</td>
+            </tr>
+            <tr>
+              <td class="ssid" data-label="SSID">Renault-biuro</td>
+              <td data-label="Hasło">RNgrupaDC25</td>
+              <td class="vl" data-label="VLAN">100</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-site"></span>Renault</td>
+            </tr>
+            <tr>
+              <td class="ssid" data-label="SSID">Ferrari-biuro</td>
+              <td data-label="Hasło">FRgrupa296GTS</td>
+              <td class="vl" data-label="VLAN">110</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-site"></span>Ferrari</td>
+            </tr>
+            <tr>
+              <td class="ssid" data-label="SSID">Lamborghini-biuro</td>
+              <td data-label="Hasło">LAMgrupaAVTDR25</td>
+              <td class="vl" data-label="VLAN">130</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-site"></span>Lamborghini</td>
+            </tr>
+            <tr>
+              <td class="ssid" data-label="SSID">Peugeot-biuro</td>
+              <td data-label="Hasło">PGgrupa5008</td>
+              <td class="vl" data-label="VLAN">120</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-site"></span>Peugeot</td>
+            </tr>
+            <tr>
+              <td class="ssid" data-label="SSID">IoT-grupa</td>
+              <td data-label="Hasło">ITkato2025&amp;</td>
+              <td class="vl" data-label="VLAN">150</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-all"></span>WszystkieAP</td>
+            </tr>
+            <tr>
+              <td class="ssid" data-label="SSID">PietrzakGoscie</td>
+              <td data-label="Hasło">-------</td>
+              <td class="vl" data-label="VLAN">170</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-guest"></span>Goscie</td>
+            </tr>
+            <tr>
+              <td class="ssid" data-label="SSID">DrukarkiWiFi</td>
+              <td data-label="Hasło">28102025109</td>
+              <td class="vl" data-label="VLAN">140</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-site"></span>Drukarki</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="footer">
+        <p class="hint">Uwaga: „Grupa AP” odzwierciedla widoczność SSID na wybranych punktach dostępowych w UniFi 9.5.x (Broadcasting APs → Specific). VLAN-y muszą istnieć na przełącznikach i bramie (FortiGate) oraz być dozwolone na trunkach.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
