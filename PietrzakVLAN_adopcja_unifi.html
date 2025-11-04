@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pl">
 <head>
@@ -67,11 +66,22 @@
         <li><b>Native VLAN / Network:</b> <code>UNIFI‑MGMT (10.251.251.0/24)</code></li>
         <li><b>Tagged VLANs:</b> <span class="pill">Block All</span></li>
       </ul>
+      <p class="tip"><b>Dlaczego tak?</b> Czysty ACCESS na VLAN1 eliminuje mieszanie broadcastów z innych VLAN‑ów. Błąd „Unable to resolve” zwykle wynika z pozostawienia <i>Allow All</i> na porcie adopcyjnym.</p>
     </li>
     <li>Podłącz nowe urządzenie (switch/AP). Po 15–60 s powinno pobrać IP <span class="ok">10.251.251.x</span>.</li>
     <li>W kontrolerze status przejdzie: <i>Pending</i> → <i>Adopting</i> → <i>Connected</i>.</li>
   </ol>
-  <p class="tip"><b>Dlaczego tak?</b> Czysty ACCESS na VLAN1 eliminuje mieszanie broadcastów z innych VLAN‑ów. Błąd „Unable to resolve” zwykle wynika z pozostawienia <i>Allow All</i> na porcie adopcyjnym.</p>
+  <p class="tip warn"><b>Uwaga (dotyczy switchy):</b>  
+  Zdarza się, że przy adopcji nowego switcha, mimo prawidłowej konfiguracji portu
+  na switchu głównym, w kontrolerze pojawia się komunikat <i>„Click to resolve”</i>.  
+  W takim przypadku należy:
+  <ul>
+    <li>zrestartować nowy switch przyciskiem <b>RESET</b>,</li>
+    <li>usunąć go z kontrolera UniFi,</li>
+    <li>po ponownym wykryciu i zaadoptowaniu — działa on prawidłowo.</li>
+  </ul>
+  Problem ten nie dotyczy punktów dostępowych Wi‑Fi. Może również wynikać z wersji firmware, która aktualizuje się przy pierwszym — nawet nieudanym — połączeniu; po takiej aktualizacji urządzenie zwykle działa prawidłowo.
+  </p>
 </section>
 
 <section class="card kroki">
