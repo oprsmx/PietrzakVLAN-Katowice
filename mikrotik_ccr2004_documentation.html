@@ -344,7 +344,7 @@
                     <li><a href="#overview">1. Przegląd konfiguracji</a></li>
                     <li><a href="#topology">2. Topologia sieci</a></li>
                     <li><a href="#vlans">3. Konfiguracja VLAN</a></li>
-                    <li><a href="#dhcp">4. Serwery DHCP (Dual-Pool System)</a></li>
+                    <li><a href="#dhcp">4. Serwery DHCP (Fake Pool + Migracja)</a></li>
                     <li><a href="#routing">5. Routing i adresacja IP</a></li>
                     <li><a href="#firewall">6. Reguły Firewall</a></li>
                     <li><a href="#bridge">7. Bridge i VLAN Filtering</a></li>
@@ -363,7 +363,7 @@
                 <div class="section-description">
                     Konfiguracja routera <strong>MikroTik CCR2004-16G-2S+</strong> pełniącego rolę <strong>Core L3 Switch</strong> 
                     z funkcją serwera DHCP dla wszystkich VLANów. Urządzenie obsługuje routing międzysieciowy, 
-                    izolację segmentów oraz advanced security features z wykorzystaniem dual-pool DHCP system (produkcja + NetBan).
+                    izolację segmentów oraz advanced security features z wykorzystaniem fake DHCP pool (100.x.x.x) i ręcznej migracji do produkcji.
                 </div>
 
                 <div class="network-stats">
@@ -631,22 +631,29 @@ add <span class="keyword">arp=</span><span class="string">reply-only</span> <spa
             <!-- Section 4: DHCP -->
             <div id="dhcp" class="section">
                 <div class="section-header">
-                    <h2>4️⃣ Serwery DHCP - Dual-Pool System</h2>
+                    <h2>4️⃣ Serwery DHCP - Fake Pool + Migracja</h2>
                 </div>
 
                 <div class="section-description">
-                    Konfiguracja wykorzystuje <strong>innowacyjny dual-pool system</strong>: każdy VLAN produkcyjny posiada 
-                    dwie pule DHCP - <strong>produkcyjną</strong> (10.x.x.x) oraz <strong>NetBan fake pool</strong> (100.x.x.x). 
-                    System ten umożliwia elastyczne zarządzanie dostępem oraz izolację problemowych urządzeń.
+                    Konfiguracja wykorzystuje <strong>fake DHCP pool (100.x.x.x)</strong> dla większości VLANów jako mechanizm testowy 
+                    i NetBan. Adresy produkcyjne (10.x.x.x) są ustawiane <strong>ręcznie</strong> przez admina przy użyciu vlan_migration_tool.
                 </div>
 
                 <div class="warning-box">
-                    <strong>⚠️ Jak działa Dual-Pool System?</strong>
-                    Każde urządzenie może otrzymać IP z dwóch różnych pul:<br>
-                    • <strong>Produkcyjna pula (10.x.x.x)</strong> - normalna praca, pełny dostęp<br>
-                    • <strong>NetBan pula (100.x.x.x)</strong> - ograniczony dostęp, fake gateway<br>
+                    <strong>⚠️ Jak działa system adresacji?</strong>
+                    <strong>Nowe urządzenie:</strong><br>
+                    • Automatycznie dostaje <strong>fake IP (100.x.x.x)</strong> przez DHCP<br>
+                    • Ma connectivity (ping gateway), ale <strong>brak dostępu do sieci</strong> (firewall DROP)<br>
                     <br>
-                    Dzięki DHCP leases można dynamicznie przełączać urządzenia między pulami bez zmiany VLAN.
+                    <strong>Migracja do produkcji:</strong><br>
+                    • Admin weryfikuje urządzenie i używa <strong>vlan_migration_tool</strong><br>
+                    • Narzędzie generuje komendy z konkretnym IP prod (10.x.x.x)<br>
+                    • Admin <strong>ręcznie ustawia</strong> wygenerowany adres na urządzeniu<br>
+                    • Urządzenie ma pełny dostęp według firewall rules<br>
+                    <br>
+                    <strong>Wyjątki - produkcyjny DHCP:</strong><br>
+                    • <strong>VLAN1 (UniFi_Mgmt):</strong> 10.251.251.50-253 (adopcja AP/switchy)<br>
+                    • <strong>VLAN170 (Goscie):</strong> 10.170.170.10-250 (goście od razu z dostępem)
                 </div>
 
                 <table>
@@ -654,88 +661,100 @@ add <span class="keyword">arp=</span><span class="string">reply-only</span> <spa
                         <tr>
                             <th>VLAN</th>
                             <th>DHCP Server</th>
-                            <th>Pula Produkcyjna</th>
-                            <th>Pula NetBan (Fake)</th>
+                            <th>Aktywna Pula DHCP</th>
+                            <th>Adresacja Prod (ręczna)</th>
                             <th>Lease Time</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr style="background: #e8f5e9;">
                             <td><strong>VLAN1</strong></td>
                             <td>dhcp_VLAN1_UniFi_Mgmt</td>
                             <td>10.251.251.50-253</td>
                             <td>-</td>
                             <td>1h</td>
+                            <td>✅ Prod DHCP</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN100</strong></td>
                             <td>dhcp_VLAN100_NetBan</td>
-                            <td>10.100.100.50-200</td>
-                            <td>100.100.100.100-150</td>
-                            <td>10m (default)</td>
+                            <td><strong>100.100.100.100-150</strong></td>
+                            <td>10.100.100.x (vlan_migration_tool)</td>
+                            <td>30m</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN110</strong></td>
                             <td>dhcp_VLAN110_NetBan</td>
-                            <td>10.110.110.50-200</td>
-                            <td>100.110.110.100-150</td>
+                            <td><strong>100.110.110.100-150</strong></td>
+                            <td>10.110.110.x (vlan_migration_tool)</td>
                             <td>1h</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN120</strong></td>
                             <td>dhcp_VLAN120_NetBan</td>
-                            <td>10.120.120.50-200</td>
-                            <td>100.120.120.100-150</td>
-                            <td>10m (default)</td>
+                            <td><strong>100.120.120.100-150</strong></td>
+                            <td>10.120.120.x (vlan_migration_tool)</td>
+                            <td>30m</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN130</strong></td>
                             <td>dhcp_VLAN130_NetBan</td>
-                            <td>10.130.130.50-200</td>
-                            <td>100.130.130.100-150</td>
-                            <td>10m (default)</td>
+                            <td><strong>100.130.130.100-150</strong></td>
+                            <td>10.130.130.x (vlan_migration_tool)</td>
+                            <td>30m</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN140</strong></td>
                             <td>dhcp_VLAN140_NetBan</td>
-                            <td>10.140.140.50-200</td>
-                            <td>100.140.140.100-150</td>
-                            <td>10m (default)</td>
+                            <td><strong>100.140.140.100-150</strong></td>
+                            <td>10.140.140.x (vlan_migration_tool)</td>
+                            <td>30m</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN150</strong></td>
                             <td>dhcp_VLAN150_NetBan</td>
-                            <td>10.150.150.50-200</td>
-                            <td>100.150.150.100-150</td>
-                            <td>10m (default)</td>
+                            <td><strong>100.150.150.100-150</strong></td>
+                            <td>10.150.150.x (vlan_migration_tool)</td>
+                            <td>30m</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN160</strong></td>
                             <td>dhcp_VLAN160_NetBan</td>
-                            <td>-</td>
-                            <td>100.160.160.10-250</td>
-                            <td>10m (default)</td>
+                            <td><strong>100.160.160.10-250</strong></td>
+                            <td>10.160.160.x (vlan_migration_tool)</td>
+                            <td>30m</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
-                        <tr>
+                        <tr style="background: #e8f5e9;">
                             <td><strong>VLAN170</strong></td>
                             <td>dhcp_VLAN170_Goscie</td>
                             <td>10.170.170.10-250</td>
                             <td>-</td>
                             <td>4h</td>
+                            <td>✅ Prod DHCP</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN180</strong></td>
                             <td>dhcp_VLAN180_NetBan</td>
-                            <td>-</td>
-                            <td>100.180.180.10-250</td>
+                            <td><strong>100.180.180.10-250</strong></td>
+                            <td>10.180.180.x (vlan_migration_tool)</td>
                             <td>10m</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN199</strong></td>
                             <td>dhcp_vlan199_Blackhole</td>
-                            <td>-</td>
                             <td>Blackhole pool</td>
+                            <td>-</td>
                             <td>12h</td>
+                            <td>⚫ Kwarantanna</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN250</strong></td>
@@ -743,31 +762,32 @@ add <span class="keyword">arp=</span><span class="string">reply-only</span> <spa
                             <td>10.250.250.100-120</td>
                             <td>-</td>
                             <td>1h</td>
+                            <td>⚠️ Legacy (nieużywany)</td>
                         </tr>
                         <tr>
                             <td><strong>VLAN300</strong></td>
                             <td>dhcp_VLAN300_NetBan</td>
-                            <td>172.18.254.2-255.253</td>
-                            <td>100.18.254.100-255.150</td>
-                            <td>10m (default)</td>
+                            <td><strong>100.18.254.100-255.150</strong></td>
+                            <td>172.18.254.x (vlan_migration_tool)</td>
+                            <td>30m</td>
+                            <td>🔴 Fake pool</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <div class="success-box">
-                    <strong>✅ Static DHCP Leases - Zaufane urządzenia:</strong>
-                    Wybrane urządzenia posiadają statyczne rezerwacje DHCP w puli produkcyjnej:<br>
-                    • 10.110.110.22 - darek-lapXY (D8:3A:DD:ED:7F:1B)<br>
-                    • 10.140.140.22 - darekWiFi (A4:C3:F0:A3:DC:66)<br>
-                    • 10.110.110.12 - wifiRPI (D8:3A:DD:ED:7F:1C)<br>
-                    • 10.180.180.22 - test-kopia (34:29:8F:74:EC:46)
+                    <strong>✅ Static DHCP Leases:</strong>
+                    Niektóre urządzenia posiadają statyczne rezerwacje DHCP:<br>
+                    • <strong>UniFi Controller (UCK):</strong> 10.251.251.10 - MAC: 78:8A:20:XX:XX:XX (VLAN1)<br>
+                    • Static lease zapewnia przewidywalny IP dla kontrolera<br>
+                    • AP i switchy UniFi otrzymują adresy dynamicznie z puli 10.251.251.50-253
                 </div>
 
                 <div class="code-block">
-                    <code><span class="comment"># Przykład konfiguracji dual-pool DHCP dla VLAN110</span>
+                    <code><span class="comment"># Przykład konfiguracji fake DHCP dla VLAN110</span>
+<span class="comment"># Pula produkcyjna (pool_prod_110) istnieje ale NIE jest używana przez DHCP server</span>
+<span class="comment"># Adresy prod ustawiane są RĘCZNIE przez vlan_migration_tool</span>
 /ip pool
-add <span class="keyword">name=</span>pool_prod_110 \
-    <span class="keyword">ranges=</span><span class="string">10.110.110.50-10.110.110.100,10.110.110.102-10.110.110.200</span>
 add <span class="keyword">name=</span>pool_NetBan_110 <span class="keyword">ranges=</span><span class="string">100.110.110.100-100.110.110.150</span>
 
 /ip dhcp-server
@@ -1351,42 +1371,11 @@ add <span class="keyword">action=</span>drop <span class="keyword">chain=</span>
                 </table>
 
                 <h3 style="margin: 30px 0 15px 0; color: #667eea;">👤 Trusted End Devices</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>IP Address</th>
-                            <th>MAC Address</th>
-                            <th>Interface</th>
-                            <th>Opis</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>10.110.110.22</strong></td>
-                            <td>D8:3A:DD:ED:7F:1B</td>
-                            <td>vlan110_Ferrari</td>
-                            <td>darek-lapXY (TRUSTED)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>10.140.140.22</strong></td>
-                            <td>A4:C3:F0:A3:DC:66</td>
-                            <td>vlan140_Drukarki</td>
-                            <td>darekWiFi (TRUSTED)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>10.110.110.12</strong></td>
-                            <td>D8:3A:DD:ED:7F:1C</td>
-                            <td>vlan110_Ferrari</td>
-                            <td>wifiRPI (TRUSTED)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>10.180.180.22</strong></td>
-                            <td>34:29:8F:74:EC:46</td>
-                            <td>vlan180_Backup_Net</td>
-                            <td>test-kopia (TRUSTED)</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="info-box">
+                    <strong>ℹ️ Static ARP dla urządzeń końcowych:</strong>
+                    Static ARP entries dla trusted devices zostały przeniesione do osobnej karty w Notion.<br>
+                    Lista jest dynamiczna i będzie aktualizowana wraz ze stabilizacją infrastruktury.
+                </div>
 
                 <div class="info-box">
                     <strong>ℹ️ Dlaczego Static ARP?</strong>
@@ -1531,8 +1520,8 @@ add <span class="keyword">comment=</span><span class="string">"Auto cleanup VLAN
                         </tr>
                         <tr>
                             <td><strong>Application</strong></td>
-                            <td>Dual-Pool DHCP</td>
-                            <td>Dynamiczne przełączanie między produkcją a NetBan</td>
+                            <td>Fake DHCP + NetBan</td>
+                            <td>Automatyczny fake pool (100.x.x.x) blokowany przez firewall</td>
                         </tr>
                         <tr>
                             <td><strong>Application</strong></td>
