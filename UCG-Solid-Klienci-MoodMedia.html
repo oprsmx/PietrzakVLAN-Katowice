@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>UCG Ultra Lamborghini - Solid - Klienci - MoodMedia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Tło i typografia */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #4b2fa3, #1e88e5);
+            color: #1f2933;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.35);
+            overflow: hidden;
+        }
+
+        /* Nagłówek */
+        .header {
+            background: linear-gradient(120deg, #512da8, #1976d2);
+            color: #ffffff;
+            padding: 24px 32px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-main {
+            max-width: 70%;
+        }
+
+        .header-title {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .header-subtitle {
+            margin-top: 6px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header-meta {
+            text-align: right;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .badge span.dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #4caf50;
+        }
+
+        .version {
+            font-weight: 600;
+        }
+
+        /* Sekcje */
+        .content {
+            padding: 24px 28px 30px;
+        }
+
+        .section {
+            margin-bottom: 26px;
+            border-radius: 14px;
+            border: 1px solid #e0e7ff;
+            background: #f9fafb;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e7ff;
+            background: linear-gradient(90deg, rgba(79, 70, 229, 0.06), rgba(59, 130, 246, 0.04));
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-pill {
+            width: 9px;
+            height: 24px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #4f46e5, #1d4ed8);
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #111827;
+        }
+
+        .section-body {
+            padding: 14px 16px 16px;
+            font-size: 14px;
+        }
+
+        .section-body p {
+            margin: 4px 0 10px;
+        }
+
+        /* Tabele */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: #eef2ff;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        th {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tbody tr:hover {
+            background: #e0f2fe;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: #e0f2fe;
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        .tag-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .tag-orange {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .tag-gray {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .stat-box {
+            border-radius: 10px;
+            border: 1px dashed #d1d5db;
+            padding: 10px 12px;
+            background: #ffffff;
+        }
+
+        .stat-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-note {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .header-main {
+                max-width: 100%;
+                margin-bottom: 12px;
+            }
+            .header-meta {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+    <div class="container">
+        <header class="header">
+            <div class="header-main">
+                <div class="badge">
+                    <span class="dot"></span>
+                    <span>Projekt Pietrzak-VLAN</span>
+                </div>
+                <h1 class="header-title">
+                    UCG Ultra Lamborghini – Solid – Klienci – MoodMedia
+                </h1>
+                <p class="header-subtitle">
+                    Dokumentacja konfiguracji lokalnej sieci LAN oraz WiFi (UCG Ultra + USW Ultra 60W + AP U7LR/U7PRO).
+                </p>
+            </div>
+            <div class="header-meta">
+                <div class="version">Wersja dokumentu: v1.0</div>
+                <div>Data utworzenia: 10.12.2025</div>
+                <div class="muted">Lokalizacja: Salon Lamborghini</div>
+            </div>
+        </header>
+
+        <main class="content">
+
+            <!-- 1. Topologia lokalizacji Lamborghini -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-pill"></div>
+                    <h2 class="section-title">1. Topologia lokalizacji Lamborghini</h2>
+                </div>
+                <div class="section-body">
+                    <p>
+                        Lokalizacja <strong>Lamborghini</strong> korzysta z lokalnego routera
+                        <strong>UCG Ultra</strong>, który obsługuje połączenie z Internetem,
+                        podsieci VLAN dla:
+                        <strong>KlienciHyperCar (VLAN 1)</strong>,
+                        <strong>Solid (VLAN 2)</strong> oraz
+                        <strong>MoodMedia (VLAN 3)</strong>.
+                        Do routera podłączony jest przełącznik <strong>USW Ultra 60W</strong>
+                        oraz punkty dostępowe <strong>U7LR-LAM</strong> i <strong>U7PRO-LAM</strong>.
+                    </p>
+
+                    <div class="grid">
+                        <div class="stat-box">
+                            <div class="stat-title">Router</div>
+                            <div class="stat-value">UCG Ultra – LamboKlientSolid</div>
+                            <div class="stat-note">
+                                Brama dla VLAN 1 / 2 / 3, serwer DHCP, Hotspot Portal.
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Przełącznik</div>
+                            <div class="stat-value">USW Ultra 60W</div>
+                            <div class="stat-note">
+                                Uplink do UCG Ultra portem GbE, zasilanie PoE dla AP.
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Punkty dostępowe</div>
+                            <div class="stat-value">U7LR-LAM-4, U7PRO-LAM-4</div>
+                            <div class="stat-note">
+                                Rozgłaszanie SSID <strong>KlienciHyperCar</strong> na 2.4 / 5 / 6 GHz.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Mapa urządzeń UniFi -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-pill"></div>
+                    <h2 class="section-title">2. Urządzenia UniFi w Lamborghini</h2>
+                </div>
+                <div class="section-body">
+                    <p>
+                        Poniższa tabela przedstawia zestawienie urządzeń widocznych w kontrolerze UniFi
+                        dla lokalizacji Lamborghini.
+                    </p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Typ</th>
+                                <th>Nazwa</th>
+                                <th>Adres IP</th>
+                                <th>Uplink</th>
+                                <th>Rola</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Gateway</td>
+                                <td>UCGUltra-LamboKlientSolid</td>
+                                <td>192.168.60.1</td>
+                                <td>-</td>
+                                <td>Router, DHCP, Hotspot</td>
+                                <td><span class="tag tag-green">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td>Switch</td>
+                                <td>USW Ultra 60W</td>
+                                <td>192.168.60.29</td>
+                                <td>UCGUltra-LamboKlientSolid Port 1</td>
+                                <td>Przełącznik dostępowy</td>
+                                <td><span class="tag tag-green">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td>AP</td>
+                                <td>U7LR-LAM-4</td>
+                                <td>192.168.60.246</td>
+                                <td>USW Ultra 60W Port 3</td>
+                                <td>AP dla hali / dużych przestrzeni</td>
+                                <td><span class="tag tag-gray">Offline</span></td>
+                            </tr>
+                            <tr>
+                                <td>AP</td>
+                                <td>U7PRO-LAM-4</td>
+                                <td>192.168.60.169</td>
+                                <td>USW Ultra 60W Port 2</td>
+                                <td>AP dla biur / strefy obsługi</td>
+                                <td><span class="tag tag-gray">Offline</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Porty UCG Ultra i przypisanie VLAN -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-pill"></div>
+                    <h2 class="section-title">3. Porty UCG Ultra – przypisanie VLAN i funkcje</h2>
+                </div>
+                <div class="section-body">
+                    <p>
+                        Konfiguracja portów na <strong>UCG Ultra</strong> w Lamborghini:
+                    </p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Port</th>
+                                <th>Nazwa logiczna</th>
+                                <th>Prędkość</th>
+                                <th>Podłączone urządzenie</th>
+                                <th>Native VLAN / Profile</th>
+                                <th>Uwagi</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Port 1</td>
+                                <td>Port 1 – Klienci</td>
+                                <td>GbE</td>
+                                <td>USW Ultra 60W</td>
+                                <td><span class="tag">VLAN 1 – KlienciHyperCar</span></td>
+                                <td>Trunk do przełącznika; ruch klientów WiFi i LAN.</td>
+                            </tr>
+                            <tr>
+                                <td>Port 2</td>
+                                <td>Port 2 – SOLID</td>
+                                <td>Auto</td>
+                                <td>–</td>
+                                <td><span class="tag tag-orange">VLAN 2 – Solid</span></td>
+                                <td>Sieć firmowa Solid (192.168.1.0/24).</td>
+                            </tr>
+                            <tr>
+                                <td>Port 3</td>
+                                <td>Port 3 – MoodMedia</td>
+                                <td>Auto</td>
+                                <td>–</td>
+                                <td><span class="tag tag-orange">VLAN 3 – MoodMedia</span></td>
+                                <td>Urządzenia audio / digital signage.</td>
+                            </tr>
+                            <tr>
+                                <td>Port 4</td>
+                                <td>Port 4</td>
+                                <td>Auto</td>
+                                <td>–</td>
+                                <td><span class="tag tag-gray">brak przypisania</span></td>
+                                <td>Port rezerwowy, do wykorzystania w przyszłości.</td>
+                            </tr>
+                            <tr>
+                                <td>Port 5</td>
+                                <td>Port 5</td>
+                                <td>GbE</td>
+                                <td>Sileman Sp. z o.o.</td>
+                                <td><span class="tag">WAN1 – Internet</span></td>
+                                <td>Połączenie z dostawcą Internetu (ISP).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Sieci i podsieci VLAN -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-pill"></div>
+                    <h2 class="section-title">4. Sieci VLAN i adresacja IP</h2>
+                </div>
+                <div class="section-body">
+                    <p>
+                        UCG Ultra pełni rolę routera i serwera DHCP dla trzech sieci VLAN
+                        zdefiniowanych w kontrolerze UniFi.
+                    </p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Nazwa sieci</th>
+                                <th>VLAN ID</th>
+                                <th>Router (brama)</th>
+                                <th>Podsieć</th>
+                                <th>DHCP</th>
+                                <th>Opis</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>KlienciHyperCar</td>
+                                <td>1</td>
+                                <td>UCGUltra-LamboKlientSolid</td>
+                                <td>192.168.60.0/24</td>
+                                <td><span class="tag tag-green">Serwer włączony</span></td>
+                                <td>Główna sieć dla klientów (LAN + WiFi).</td>
+                            </tr>
+                            <tr>
+                                <td>Solid</td>
+                                <td>2</td>
+                                <td>UCGUltra-LamboKlientSolid</td>
+                                <td>192.168.1.0/24</td>
+                                <td><span class="tag tag-green">Serwer włączony</span></td>
+                                <td>Sieć firmowa Solid – urządzenia pracownicze.</td>
+                            </tr>
+                            <tr>
+                                <td>MoodMedia</td>
+                                <td>3</td>
+                                <td>UCGUltra-LamboKlientSolid</td>
+                                <td>192.168.70.0/24</td>
+                                <td><span class="tag tag-green">Serwer włączony</span></td>
+                                <td>Systemy muzyczne / ekrany reklamowe.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="muted">
+                        Uwaga: adresację i zakresy DHCP można modyfikować wyłącznie zgodnie z głównym
+                        planem adresacji w projekcie Pietrzak-VLAN.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 5. STP na łączach UCG Ultra – USW Ultra 60W -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-pill"></div>
+                    <h2 class="section-title">5. STP – status i założenia</h2>
+                </div>
+                <div class="section-body">
+                    <p>
+                        Na relacji <strong>UCG Ultra ↔ USW Ultra 60W</strong> wykorzystywany jest standardowy
+                        mechanizm <strong>Spanning Tree Protocol (STP)</strong> w trybie rekomendowanym przez UniFi
+                        dla prostych topologii bez pętli.
+                    </p>
+                    <ul>
+                        <li>UCG Ultra pełni rolę głównego punktu brzegowego – brak redundantnych uplinków.</li>
+                        <li>USW Ultra 60W ma pojedynczy uplink do UCG Ultra – fizyczne pętle nie występują.</li>
+                        <li>Domyślna konfiguracja STP jest wystarczająca; nie ma konieczności definiowania
+                            priorytetów bridge ani portów edge.</li>
+                        <li>W przypadku rozbudowy (dodatkowy switch lub drugi uplink) należy wprowadzić
+                            ręczne priorytety STP i oznaczyć porty access jako <em>edge</em>.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 6. Konfiguracja WiFi KlienciHyperCar -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-pill"></div>
+                    <h2 class="section-title">6. Sieć WiFi &bdquo;KlienciHyperCar&rdquo;</h2>
+                </div>
+                <div class="section-body">
+                    <p>
+                        Sieć WiFi <strong>KlienciHyperCar</strong> jest skonfigurowana jako
+                        <strong>Native Network</strong> i przypisana do VLAN 1 (192.168.60.0/24).
+                        Używana jest jako sieć dla klientów w salonie.
+                    </p>
+
+                    <div class="grid">
+                        <div class="stat-box">
+                            <div class="stat-title">SSID</div>
+                            <div class="stat-value">KlienciHyperCar</div>
+                            <div class="stat-note">Broadcast: wszystkie AP w salonie.</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Pasma</div>
+                            <div class="stat-value">2.4 GHz, 5 GHz, 6 GHz</div>
+                            <div class="stat-note">Włączony band steering i BSS transition.</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-title">Bezpieczeństwo</div>
+                            <div class="stat-value">Open + Hotspot Portal</div>
+                            <div class="stat-note">Autoryzacja odbywa się na stronie Captive Portal.</div>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 10px;">
+                        Dodatkowe opcje:
+                    </p>
+                    <ul>
+                        <li><strong>Client Device Isolation:</strong> wyłączone – klienci mogą komunikować się zgodnie
+                            z regułami routera.</li>
+                        <li><strong>Proxy ARP:</strong> zgodnie z domyślną konfiguracją UCG Ultra.</li>
+                        <li><strong>802.11 DTIM:</strong> Auto (1 / 3 / 3 dla 2.4 / 5 / 6 GHz).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 7. Captive Portal – hasło i zasady -->
+            <section class="section">
+                <div class="section-header">
+                    <div class="section-pill"></div>
+                    <h2 class="section-title">7. Captive Portal &amp; Hotspot</h2>
+                </div>
+                <div class="section-body">
+                    <p>
+                        Do sieci <strong>KlienciHyperCar</strong> przypisany jest
+                        <strong>Hotspot Portal</strong> obsługiwany przez UCG Ultra.
+                        Po podłączeniu do WiFi użytkownik otrzymuje stronę logowania z logo grupy
+                        <strong>PIETRZAK</strong> i formularzem wprowadzenia hasła gościa.
+                    </p>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Element</th>
+                                <th>Wartość / opis</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Tryb portalu</td>
+                                <td>Hotspot Portal – autoryzacja hasłem</td>
+                            </tr>
+                            <tr>
+                                <td>Metoda uwierzytelnienia</td>
+                                <td>Hasło statyczne (Password) – bez zewnętrznego serwera</td>
+                            </tr>
+                            <tr>
+                                <td>Hasło dla gości</td>
+                                <td><strong>hypercar2025</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Izolacja gości</td>
+                                <td>Domyślna izolacja portalu – dostęp tylko do Internetu, brak dostępu
+                                    do sieci wewnętrznych, o ile nie zdefiniowano wyjątków.</td>
+                            </tr>
+                            <tr>
+                                <td>Wygląd strony</td>
+                                <td>Zdjęcie budynku salonu w tle, okno dialogowe „Guest Password”.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p style="margin-top: 10px;">
+                        W przypadku problemów z wyświetlaniem portalu (np. wcześniej połączenie z siecią,
+                        ale brak strony logowania) należy w pierwszej kolejności sprawdzić:
+                    </p>
+                    <ul>
+                        <li>czy sieć WiFi <strong>KlienciHyperCar</strong> nadal ma przypisany
+                            <strong>Hotspot Portal</strong>,</li>
+                        <li>czy ruch z VLAN 1 nie jest blokowany przez lokalne reguły firewall/DoP,</li>
+                        <li>czy klient nie korzysta z trybu „prywatny DNS / VPN”, który może omijać
+                            przekierowanie na portal.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+</body>
+</html>
