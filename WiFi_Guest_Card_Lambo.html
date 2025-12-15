@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>QR – KlienciHyperCar</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #111;
+        font-family: "Segoe UI", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .card {
+        width: 480px;
+        padding: 35px;
+        border-radius: 20px;
+        background: #000;
+        color: white;
+        border: 2px solid #d4af37;
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.35);
+        text-align: center;
+    }
+
+    .title {
+        font-size: 30px;
+        font-weight: 700;
+        color: #d4af37;
+        margin-bottom: 10px;
+        letter-spacing: 0.07em;
+    }
+
+    .subtitle {
+        font-size: 15px;
+        color: #bbbbbb;
+        margin-bottom: 25px;
+    }
+
+    .qr-container {
+        display: inline-block;
+        padding: 8px;
+        border-radius: 12px;
+        border: 3px solid #d4af37;
+        background: #000;
+    }
+
+    canvas#qrCanvas {
+        display: block;
+        background: #fff;
+    }
+
+    .info-box {
+        margin-top: 25px;
+        font-size: 16px;
+        line-height: 1.6;
+        font-weight: 500;
+    }
+
+    .label {
+        color: #d4af37;
+        font-weight: 600;
+    }
+
+    .footer {
+        margin-top: 25px;
+        font-size: 13px;
+        color: #777;
+        letter-spacing: 0.06em;
+    }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="title">KlienciHyperCar</div>
+    <div class="subtitle">Sieć WiFi – Połącz automatycznie</div>
+
+    <div class="qr-container">
+        <canvas id="qrCanvas" width="296" height="296"></canvas>
+    </div>
+
+    <div class="info-box">
+        <div><span class="label">SSID:</span> KlienciHyperCar</div>
+        <div><span class="label">Hasło w portalu:</span> hypercar2025</div>
+    </div>
+
+    <div class="footer">
+        HyperCar Premium Edition · Lamborghini · Grupa Pietrzak
+    </div>
+</div>
+
+<script>
+    // Matryca QR wygenerowana dla: WIFI:T:nopass;S:KlienciHyperCar;;
+    // # = czarny moduł, . = biały moduł
+    const qrMatrix = [
+        ".....................................",
+        ".....................................",
+        ".....................................",
+        ".....................................",
+        "....#######..###.###..#...#######....",
+        "....#.....#.#.##...#..#.#.#.....#....",
+        "....#.###.#.#.##..#.#..#..#.###.#....",
+        "....#.###.#.###.#.##....#.#.###.#....",
+        "....#.###.#..##..###.####.#.###.#....",
+        "....#.....#..#.#.##.#.#...#.....#....",
+        "....#######.#.#.#.#.#.#.#.#######....",
+        "............###.##....###............",
+        "....#.....#.#.###.##.#.#.##..###.....",
+        "....####.....#.#..#..#.#.#.##...#....",
+        "....#..##.####.##.....#.##.#.#.......",
+        "............#.#.#.###...###.#...#....",
+        "....###.#.#.#..#.##.#..####.....#....",
+        ".....####..#..#####....######.#......",
+        ".....#.##.##....#####.#.#####.#......",
+        "....####.#...##.#####.#.##..#####....",
+        "....#..##.#...##..#.##.#.....#.##....",
+        "....#.###..###.#...#..####.###.......",
+        "....##..###.#.##.###.#.########.#....",
+        "....#..#.#.######.##....###.#..##....",
+        "....#...#.##.##.....##.########......",
+        "............#.#..#.##...#...#..##....",
+        "....#######...##.###.####.#.#.#......",
+        "....#.....#......#.#..###...##.#.....",
+        "....#.###.#..#..##.#.#.#######.##....",
+        "....#.###.#..#..#..##.###..#.##.#....",
+        "....#.###.#..###..#####.#.###.##.....",
+        "....#.....#...#.....#...#..#.##.#....",
+        "....#######.#...##.#.#.#.###..#......",
+        ".....................................",
+        ".....................................",
+        ".....................................",
+        "....................................."
+    ];
+
+    (function drawQR() {
+        const canvas = document.getElementById('qrCanvas');
+        const ctx = canvas.getContext('2d');
+        const cellSize = 8; // 37 * 8 = 296 px
+
+        // tło
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // moduły
+        ctx.fillStyle = "#000000";
+        for (let y = 0; y < qrMatrix.length; y++) {
+            const row = qrMatrix[y];
+            for (let x = 0; x < row.length; x++) {
+                if (row[x] === '#') {
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+    })();
+</script>
+
+</body>
+</html>
