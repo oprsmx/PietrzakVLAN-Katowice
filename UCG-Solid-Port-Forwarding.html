@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pietrzak VLAN - Port Forwarding</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+            --accent: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            margin: 0;
+            padding: 40px 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-info h1 {
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-info p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .ip-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .ip-badge span {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .ip-badge strong {
+            font-size: 18px;
+            font-family: monospace;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .device-group {
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .group-header {
+            background: var(--light);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .group-header h2 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .internal-ip {
+            font-family: monospace;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            background: #fff;
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .port-tag {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .arrow {
+            color: #94a3b8;
+            margin: 0 8px;
+        }
+
+        .protocol {
+            font-size: 10px;
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .footer {
+            padding: 20px 30px;
+            background: var(--light);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .group-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            th:nth-child(3), td:nth-child(3) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-info">
+            <h1>Zestawienie Port Forwarding</h1>
+            <p>Konfiguracja dostępów zewnętrznych do rejestratorów DVR/NVR</p>
+        </div>
+        <div class="ip-badge">
+            <span>Public IP (WAN1)</span>
+            <strong>85.198.234.4</strong>
+        </div>
+    </header>
+
+    <div class="content">
+        
+        <!-- LAMBORGHINI 1 -->
+        <div class="device-group">
+            <div class="group-header">
+                <h2>🏎️ Rejestrator Lamborghini 1</h2>
+                <span class="internal-ip">LAN: 192.168.1.168</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usługa</th>
+                        <th>Port Publiczny</th>
+                        <th>Port Lokalny</th>
+                        <th>Protokół</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTTP (Web)</td><td><span class="port-tag">80</span></td><td><span class="arrow">→</span> 80</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>SDK / Media</td><td><span class="port-tag">8000</span></td><td><span class="arrow">→</span> 8000</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>RTSP (Stream)</td><td><span class="port-tag">554</span></td><td><span class="arrow">→</span> 554</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>HTTPS</td><td><span class="port-tag">443</span></td><td><span class="arrow">→</span> 443</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- LAMBORGHINI 2 -->
+        <div class="device-group">
+            <div class="group-header">
+                <h2>🏎️ Rejestrator Lamborghini 2</h2>
+                <span class="internal-ip">LAN: 192.168.1.169</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Usługa</th><th>Port Publiczny</th><th>Port Lokalny</th><th>Protokół</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTTP (Web)</td><td><span class="port-tag">81</span></td><td><span class="arrow">→</span> 80</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>SDK / Media</td><td><span class="port-tag">8001</span></td><td><span class="arrow">→</span> 8000</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>RTSP (Stream)</td><td><span class="port-tag">555</span></td><td><span class="arrow">→</span> 554</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>HTTPS</td><td><span class="port-tag">444</span></td><td><span class="arrow">→</span> 443</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PEUGEOT -->
+        <div class="device-group" style="border-left: 4px solid #2563eb;">
+            <div class="group-header">
+                <h2>🦁 Rejestrator Peugeot</h2>
+                <span class="internal-ip">LAN: 192.168.1.202</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Usługa</th><th>Port Publiczny</th><th>Port Lokalny</th><th>Protokół</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTTP (Web)</td><td><span class="port-tag">82</span></td><td><span class="arrow">→</span> 80</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>SDK / Media</td><td><span class="port-tag">8002</span></td><td><span class="arrow">→</span> 8000</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>RTSP (Stream)</td><td><span class="port-tag">556</span></td><td><span class="arrow">→</span> 554</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>HTTPS</td><td><span class="port-tag">445</span></td><td><span class="arrow">→</span> 443</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- RENAULT -->
+        <div class="device-group" style="border-left: 4px solid #facc15;">
+            <div class="group-header">
+                <h2>💎 Rejestrator Renault</h2>
+                <span class="internal-ip">LAN: 192.168.1.203</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Usługa</th><th>Port Publiczny</th><th>Port Lokalny</th><th>Protokół</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTTP (Web)</td><td><span class="port-tag">83</span></td><td><span class="arrow">→</span> 80</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>SDK / Media</td><td><span class="port-tag">8003</span></td><td><span class="arrow">→</span> 8000</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>RTSP (Stream)</td><td><span class="port-tag">557</span></td><td><span class="arrow">→</span> 554</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>HTTPS</td><td><span class="port-tag">446</span></td><td><span class="arrow">→</span> 443</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FERRARI 1 -->
+        <div class="device-group" style="border-left: 4px solid #dc2626;">
+            <div class="group-header">
+                <h2>🐎 Rejestrator Ferrari 1</h2>
+                <span class="internal-ip">LAN: 192.168.1.204</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Usługa</th><th>Port Publiczny</th><th>Port Lokalny</th><th>Protokół</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTTP (Web)</td><td><span class="port-tag">84</span></td><td><span class="arrow">→</span> 80</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>SDK / Media</td><td><span class="port-tag">8004</span></td><td><span class="arrow">→</span> 8000</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>RTSP (Stream)</td><td><span class="port-tag">558</span></td><td><span class="arrow">→</span> 554</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>HTTPS</td><td><span class="port-tag">447</span></td><td><span class="arrow">→</span> 443</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FERRARI 2 -->
+        <div class="device-group" style="border-left: 4px solid #dc2626;">
+            <div class="group-header">
+                <h2>🐎 Rejestrator Ferrari 2</h2>
+                <span class="internal-ip">LAN: 192.168.1.205</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Usługa</th><th>Port Publiczny</th><th>Port Lokalny</th><th>Protokół</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTTP (Web)</td><td><span class="port-tag">85</span></td><td><span class="arrow">→</span> 80</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>SDK / Media</td><td><span class="port-tag">8005</span></td><td><span class="arrow">→</span> 8000</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>RTSP (Stream)</td><td><span class="port-tag">559</span></td><td><span class="arrow">→</span> 554</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>HTTPS</td><td><span class="port-tag">448</span></td><td><span class="arrow">→</span> 443</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FERRARI 3 -->
+        <div class="device-group" style="border-left: 4px solid #dc2626;">
+            <div class="group-header">
+                <h2>🐎 Rejestrator Ferrari 3</h2>
+                <span class="internal-ip">LAN: 192.168.1.206</span>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Usługa</th><th>Port Publiczny</th><th>Port Lokalny</th><th>Protokół</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>HTTP (Web)</td><td><span class="port-tag">86</span></td><td><span class="arrow">→</span> 80</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>SDK / Media</td><td><span class="port-tag">8006</span></td><td><span class="arrow">→</span> 8000</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>RTSP (Stream)</td><td><span class="port-tag">560</span></td><td><span class="arrow">→</span> 554</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                    <tr><td>HTTPS</td><td><span class="port-tag">449</span></td><td><span class="arrow">→</span> 443</td><td><span class="protocol">TCP/UDP</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <div><span class="status-dot"></span> Interfejs: Internet 1 (WAN1)</div>
+        <div>PietrzakVLAN | Konfiguracja: MikroTik/FortiGate</div>
+    </div>
+</div>
+
+</body>
+</html>
