@@ -65,6 +65,14 @@
       tbody td{display:flex;justify-content:space-between;gap:18px}
       tbody td::before{content:attr(data-label);font-weight:600;color:var(--muted)}
     }
+    
+    .row-note {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 2px;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -75,7 +83,7 @@
           <div class="logo"><span>PV</span></div>
           <div>
             <h1>Plan SSID – Pietrzak VLAN</h1>
-            <div class="date">Utworzono: 2025-10-29</div>
+            <div class="date">Ostatnia aktualizacja: 2025-11-24</div>
           </div>
         </div>
       </header>
@@ -111,6 +119,15 @@
             <tr>
               <td class="ssid" data-label="SSID">Lamborghini-biuro</td>
               <td data-label="Hasło">LAMgrupaAVTDR25</td>
+              <td class="vl" data-label="VLAN">130</td>
+              <td class="grp" data-label="Grupa AP"><span class="dot g-site"></span>Lamborghini</td>
+            </tr>
+            <tr>
+              <td class="ssid" data-label="SSID">
+                LamboSerwis
+                <span class="row-note">Osobny router (poza LAN głównym)</span>
+              </td>
+              <td data-label="Hasło">BTAC2026!</td>
               <td class="vl" data-label="VLAN">130</td>
               <td class="grp" data-label="Grupa AP"><span class="dot g-site"></span>Lamborghini</td>
             </tr>
